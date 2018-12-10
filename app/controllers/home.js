@@ -17,9 +17,9 @@ var CSVWrite = true;
 const MONGO_URI = "mongodb://127.0.0.1:27017";
 
 // Using the IPC provider in node.js
-const GETH_IPC_PATH = '/ethereum/red-principal/geth.ipc';
+//const GETH_IPC_PATH = '/ethereum/red-principal/geth.ipc';
 var web3 = new Web3();
-web3.setProvider(GETH_IPC_PATH, net);
+//web3.setProvider(GETH_IPC_PATH, net);
 
 var express = require('express'),
   router = express.Router();
