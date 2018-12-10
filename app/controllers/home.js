@@ -563,8 +563,8 @@ function getRandomWallet(chosenBlock, res, nodes, levels, type) {
         var chosenTx = Math.round(chosenTxNumber);
         var wallet = result.transactions[chosenTx].from;
         console.log("First wallet is " + wallet);
-        //getWalletTreeFromCassandra(res, wallet, nodes, levels, type);
-        getWalletTreeFromMongo(res, wallet, nodes, levels, type);
+        getWalletTreeFromCassandra(res, wallet, nodes, levels, type);
+        //getWalletTreeFromMongo(res, wallet, nodes, levels, type);
       }
     }
   });
@@ -595,8 +595,8 @@ router.get('/getWalletTree', function(req, res) {
   if (wallet == "" || wallet == null || wallet == undefined) {
     getRandomWallet(chosenBlock, res, nodes, levels, type);
   } else {
-    //getWalletTreeFromCassandra(res, wallet, nodes, levels, type);
-    getWalletTreeFromMongo(res, wallet, nodes, levels, type);
+    getWalletTreeFromCassandra(res, wallet, nodes, levels, type);
+    //getWalletTreeFromMongo(res, wallet, nodes, levels, type);
   }
 });
 
