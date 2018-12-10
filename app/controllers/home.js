@@ -115,9 +115,35 @@ function RCallNormal(res, accounts) {
   res.render('response');
 }
 
-// Called when req.query.type is betweenness
+// Called when req.query.type is etweenness
 function RCallBetween(res, accounts) {
   var out = R("/home/ether/EthereumTracking/TFM/R/betweenness.R")
+    .data()
+    .callSync();
+  generateJSON(res, accounts, "betweenness");
+  //exec('cp /home/ether/EthereumTracking/TFM/R/TreeResponse.html /home/ether/EthereumTracking/TFM/EthereumStats/app/views/', function callback(error, stdout, stderr) {
+  //  res.render('response');
+  //});
+  console.log("rendering...");
+  res.render('response');
+}
+
+// Called when req.query.type is closeness
+function RCallCloseness(res, accounts) {
+  var out = R("/home/ether/EthereumTracking/TFM/R/closeness.R")
+    .data()
+    .callSync();
+  generateJSON(res, accounts, "betweenness");
+  //exec('cp /home/ether/EthereumTracking/TFM/R/TreeResponse.html /home/ether/EthereumTracking/TFM/EthereumStats/app/views/', function callback(error, stdout, stderr) {
+  //  res.render('response');
+  //});
+  console.log("rendering...");
+  res.render('response');
+}
+
+// Called when req.query.type is pageRank
+function RCallPageRank(res, accounts) {
+  var out = R("/home/ether/EthereumTracking/TFM/R/pagerank.R")
     .data()
     .callSync();
   generateJSON(res, accounts, "betweenness");
@@ -730,6 +756,10 @@ function printTransCassandra(res, type, accounts) {
     } else if (type == "betweenness") {
       RCallBetween(res, accountsVisualization);
       //console.log("Calling RCallBetween()");
+    } else if (type == "closeness") {
+      RCallCloseness(res, accountsVisualization);
+    } else if (type == "pageRank") {
+      RCallPageRank(res, accountsVisualization);
     } else {
       console.log("Wrong input type.");
     }
