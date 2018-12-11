@@ -401,21 +401,34 @@ async function getReceiversForWalletInMongo(accList, res, type, accounts, nodes,
     console.log("Next wallet from set is " + wallet + ".\n");
 
 
+    // Get the remainin size. We will stop iterating through the cursor if this number is reached
+    var remainingSize = nodes - accounts.length;
 
     var cursor = dbo.collection('Transaction').find(query);
     console.log("Got cursor");
 
     var result = new Array();
 
+    var cursorCounter = 0;
 
     while (await cursor.hasNext()) {
-      console.log("Siguiente del cursor");
-      var doc = await cursor.next();
-      //console.log("Doc is " + JSON.stringify(doc));
-      result.push([doc])
+      if (cursorCounter < remainingSize) {
+        var doc = await cursor.next();
+        //console.log("Document is " + JSON.parse(JSON.stringify(doc)).sender);
+        //console.log("Document is " + JSON.parse(JSON.stringify(doc)));
+        //console.log("Document receiver is " + doc["receiver"]);
+        result.push(doc);
+        //console.log("Result is " + result.toString());
+        cursorCounter++;
+      } else {
+        break;
+      }
     }
 
+    console.log("Closing cursor after " + cursorCounter + " iterations");
     cursor.close();
+
+    //console.log("Testing values: hash is " + result[0]["_id"]);
 
     if (result.length > 0) {
       // Receivers size for this wallet
@@ -423,18 +436,19 @@ async function getReceiversForWalletInMongo(accList, res, type, accounts, nodes,
       console.log(size + " receivers for this wallet");
       console.log("Size is " + size + " for wallet" + wallet);
       // Number of remaining nodes to add 
-      var remainingSize = nodes - accounts.length;
+      //var remainingSize = nodes - accounts.length;
 
 
       // Max nodes number reached in this iteration
       if (size >= remainingSize) {
         size = remainingSize;
+        console.log("Size and remaining size are equal " + size + " " + remainingSize);
         console.log("Size after updating to the remaining size is : " + size);
         for (var i = 0; i < size; i++) {
           //console.log(result.rows[0].receivers[i]);
-          var receiver = result[0].wallet;
-          var amount = result[0].amount;
-          var hash = result[0].hash;
+          var receiver = result[i]["receiver"];
+          var amount = result[i]["amount"];
+          var hash = result[i]["_id"];
           //console.log("RECEIVER is " + receiver + " AMOUNT is " + amount + " HASH is " + hash);
           if (wallet != null && wallet != "" && wallet != undefined &&
             receiver != null && receiver != "" && receiver != undefined &&
@@ -450,10 +464,12 @@ async function getReceiversForWalletInMongo(accList, res, type, accounts, nodes,
         return db.close();
       } else {
         for (var i = 0; i < size; i++) {
-          //console.log(result.rows[0].receivers[i]);
-          var receiver = result[0].receiver;
-          var amount = result[0].amount;
-          var hash = result[0].hash;
+          var item = result[i];
+          console.log("Item is " + JSON.stringify(item));
+          console.log("Receiver is " + item["receiver"]);
+          var receiver = result[i]["receiver"];
+          var amount = result[i]["amount"];
+          var hash = result[i]["_id"];
           //console.log("RECEIVER is " + receiver + " AMOUNT is " + amount + " HASH is " + hash);
           if (wallet != null && wallet != "" && wallet != undefined &&
             receiver != null && receiver != "" && receiver != undefined &&
@@ -589,8 +605,8 @@ function getRandomWallet(chosenBlock, res, nodes, levels, type) {
         var chosenTx = Math.round(chosenTxNumber);
         var wallet = result.transactions[chosenTx].from;
         console.log("First wallet is " + wallet);
-        getWalletTreeFromCassandra(res, wallet, nodes, levels, type);
-        //getWalletTreeFromMongo(res, wallet, nodes, levels, type);
+        //getWalletTreeFromCassandra(res, wallet, nodes, levels, type);
+        getWalletTreeFromMongo(res, wallet, nodes, levels, type);
       }
     }
   });
@@ -621,8 +637,8 @@ router.get('/getWalletTree', function(req, res) {
   if (wallet == "" || wallet == null || wallet == undefined) {
     getRandomWallet(chosenBlock, res, nodes, levels, type);
   } else {
-    getWalletTreeFromCassandra(res, wallet, nodes, levels, type);
-    //getWalletTreeFromMongo(res, wallet, nodes, levels, type);
+    //getWalletTreeFromCassandra(res, wallet, nodes, levels, type);
+    getWalletTreeFromMongo(res, wallet, nodes, levels, type);
   }
 });
 
