@@ -16,10 +16,17 @@ var CSVWrite = true;
 // Mongo uri
 const MONGO_URI = "mongodb://127.0.0.1:27017";
 
+
+// --- PROD
 // Using the IPC provider in node.js
 const GETH_IPC_PATH = '/ethereum/red-principal/geth.ipc';
-var web3 = new Web3();
-web3.setProvider(GETH_IPC_PATH, net);
+//var web3 = new Web3();
+//web3.setProvider(GETH_IPC_PATH, net);
+
+// --- DEV
+var APIKEY = "1b3a2b15af6a404b8b010d742c9ff922";
+web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/' + APIKEY));
+
 
 var express = require('express'),
   router = express.Router();
@@ -35,10 +42,7 @@ module.exports = function(app) {
 */
 
 router.get('/', function(req, res) {
-  res.render('index', {
-    title: 'Ethereum Tracking',
-    notFound: ""
-  })
+  renderIndex(res);
 })
 
 router.get('/index.html', function(req, res) {
@@ -808,6 +812,26 @@ function printTransCassandra(res, type, accounts) {
 /*
 ----- Auxiliary funtions
 */
+
+//Render index
+async function renderIndex(res) {
+  web3.eth.getBlockNumber().then(function(block) {
+    web3.eth.getBlock(block, false, function(error, result) {
+      if (error) {
+        //TODO render error page
+        throw err;
+      }
+      console.log(block);
+      console.log(result);
+      res.render('index', {
+        bNumber: block,
+        miner: result.miner,
+        difficulty: result.totalDifficulty,
+        txNumber: result.transactions.length
+      });
+    });
+  });
+}
 
 //This doesn't scale very well
 function groupPairsOfNodes(accounts) {

@@ -1,13 +1,192 @@
-<% include header %>
+<!DOCTYPE html>
+<!--
+* CoreUI - Free Bootstrap Admin Template
+* @version v2.1.10
+* @link https://coreui.io
+* Copyright (c) 2018 creativeLabs Łukasz Holeczek
+* Licensed under MIT (https://coreui.io/license)
+-->
 
-<% include nav %>
+<html lang="en">
+  <head>
+    <base href="./">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+    <meta name="author" content="Łukasz Holeczek">
+    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <title>Tracether</title>
+    <!-- Main styles for this application-->
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/styleCoreUI.css" rel="stylesheet">
+    <link href="vendors/pace-progress/css/pace.min.css" rel="stylesheet">
+    <!-- Global site tag (gtag.js) - Google Analytics-->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
 
-<div class="jumbotron">
-	<div class="container">
-		<h1>Tracking wallets on Ethereum's blockchain</h1>
-	</div>
-</div>
-
-<% include formWalletsTracking %>
-
-<% include footer %>
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      // Shared ID
+      gtag('config', 'UA-118965717-3');
+      // Bootstrap ID
+      gtag('config', 'UA-118965717-5');
+    </script>
+  </head>
+  <% include header %>
+  <body class="app header-fixed">    
+    <% include nav %>
+    <div class="app-body">
+      <main class="main">
+        <div class="container-fluid">
+          <div class="animated fadeIn">
+            <div class="row">
+              <!-- Last block-->
+              <div class="col-sm-6 col-lg-3">
+                <div class="card text-white bg-primary">
+                  <div class="card-body pb-0">
+                    <div class="btn-group float-right">
+                    </div>
+                    <div class="text-center"><%= bNumber %></div>
+                    <div class="text-center">Last block</div>
+                  </div>
+                  <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
+                    <canvas class="chart" id="card-chart1" height="70"></canvas>
+                  </div>
+                </div>
+              </div>
+              <!-- Last miner-->
+              <div class="col-sm-6 col-lg-3">
+                <div class="card text-white bg-info">
+                  <div class="card-body pb-0">
+                    <div class="text-center"><%= miner %></div>
+                    <div class="text-center">Last miner</div>
+                  </div>
+                  <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
+                    <canvas class="chart" id="card-chart2" height="70"></canvas>
+                  </div>
+                </div>
+              </div>
+              <!-- Difficulty -->
+              <div class="col-sm-6 col-lg-3">
+                <div class="card text-white bg-warning">
+                  <div class="card-body pb-0">
+                    <div class="btn-group float-right">
+                    </div>
+                    <div class="text-center"><%= difficulty %></div>
+                    <div class="text-center">Difficulty</div>
+                  </div>
+                  <div class="chart-wrapper mt-3" style="height:70px;">
+                    <canvas class="chart" id="card-chart3" height="70"></canvas>
+                  </div>
+                </div>
+              </div>
+              <!-- Last block tx number -->
+              <div class="col-sm-6 col-lg-3">
+                <div class="card text-white bg-danger">
+                  <div class="card-body pb-0">
+                    <div class="btn-group float-right">
+                    </div>
+                    <div class="text-center"><%= txNumber %></div>
+                    <div class="text-center">Last block #txs</div>
+                  </div>
+                  <div class="chart-wrapper mt-3" style="height:70px;">
+                    <canvas class="chart" id="card-chart4" height="70"></canvas>
+                  </div>
+                </div>
+              </div>
+              <!-- /.col-->
+            </div>
+            <!-- /.row-->
+            
+            <!-- /.row-->
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card">
+                  <div class="card-header">Last block transactions detail</div>
+                  <div class="card-body">
+                    
+                    <table class="table table-responsive-sm table-hover table-outline mb-0">
+                      <thead class="thead-light">
+                        <tr>
+                          <th class="text-center">
+                            <i class="icon-people"></i>
+                          </th>
+                          <th class="text-center">Block number</th>
+                          <th class="text-center">Transaction hash</th>
+                          <th class="text-center">Sender</th>
+                          <th class="text-center">Receiver</th>
+                          <th class="text-center">Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td class="text-center>
+                            <div>Yiorgos Avraamu</div>
+                            <div class="small text-muted">
+                              <span>New</span> | Registered: Jan 1, 2015</div>
+                          </td>
+                          <td class="text-center">
+                            <i class="flag-icon flag-icon-us h4 mb-0" id="us" title="us"></i>
+                          </td>
+                          <td class="text-center>
+                            <div class="clearfix">
+                              <div class="float-left">
+                                <strong>50%</strong>
+                              </div>
+                              <div class="float-right">
+                                <small class="text-muted">Jun 11, 2015 - Jul 10, 2015</small>
+                              </div>
+                            </div>
+                            <div class="progress progress-xs">
+                              <div class="progress-bar bg-success" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                          </td>
+                          <td class="text-center">
+                            <i class="fa fa-cc-mastercard" style="font-size:24px"></i>
+                          </td>
+                          <td class="text-center>
+                            <div class="small text-muted">Last login</div>
+                            <strong>10 sec ago</strong>
+                          </td>
+                        </tr>
+                        
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <!-- /.col-->
+            </div>
+            <!-- /.row-->
+          </div>
+        </div>
+      </main>
+      
+    </div>
+    <footer class="app-footer">
+      <div>
+        <a href="https://coreui.io">CoreUI</a>
+        <span>&copy; 2018 creativeLabs.</span>
+      </div>
+      <div class="ml-auto">
+        <span>Powered by</span>
+        <a href="https://coreui.io">CoreUI</a>
+      </div>
+    </footer>
+    <!-- CoreUI and necessary plugins-->
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="node_modules/pace-progress/pace.min.js"></script>
+    <script src="node_modules/perfect-scrollbar/dist/perfect-scrollbar.min.js"></script>
+    <script src="node_modules/@coreui/coreui/dist/js/coreui.min.js"></script>
+    <!-- Plugins and scripts required by this view-->
+    <script src="node_modules/chart.js/dist/Chart.min.js"></script>
+    <script src="node_modules/@coreui/coreui-plugin-chartjs-custom-tooltips/dist/js/custom-tooltips.min.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
