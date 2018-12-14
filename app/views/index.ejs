@@ -8,28 +8,28 @@
 -->
 
 <html lang="en">
-  <head>
-    <base href="./">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
-    <meta name="author" content="Łukasz Holeczek">
-    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
-    <title>Tracether</title>
-    <!-- Main styles for this application-->
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/styleCoreUI.css" rel="stylesheet">
-    <link href="vendors/pace-progress/css/pace.min.css" rel="stylesheet">
-    <!-- Global site tag (gtag.js) - Google Analytics-->
-    <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
+<head>
+  <base href="./">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+  <meta name="author" content="Łukasz Holeczek">
+  <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+  <title>Tracether</title>
+  <!-- Main styles for this application-->
+  <link href="css/style.css" rel="stylesheet">
+  <link href="css/styleCoreUI.css" rel="stylesheet">
+  <link href="vendors/pace-progress/css/pace.min.css" rel="stylesheet">
+  <!-- Global site tag (gtag.js) - Google Analytics-->
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
 
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag('js', new Date());
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
       // Shared ID
       gtag('config', 'UA-118965717-3');
       // Bootstrap ID
@@ -101,14 +101,115 @@
               <!-- /.col-->
             </div>
             <!-- /.row-->
-            
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Block number</th>
+                  <th scope="col">Tx hash</th>
+                  <th scope="col">Sender</th>
+                  <th scope="col">Receiver</th>
+                  <th scope="col">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                          <td>
+                            <div class="avoid"><%= bNumber %></div>
+                          </td>
+                          <td>
+                            <div class="avoid"><%= hash1 %></div>
+                          </td>
+                          <td>
+                            <div class="avoid"><%= sender1 %></div>
+                          </td>
+                          <td>
+                            <div class="avoid"><%= receiver1 %></div>
+                          </td>
+                         <td>
+                            <div class="avoid"><%= amount1 %></div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <div class="avoid"><%= bNumber %></div>
+                          </td>
+                          <td>
+                            <div class="avoid"><%= hash2 %></div>
+                          </td>
+                          <td>
+                            <div class="avoid"><%= sender2 %></div>
+                          </td>
+                          <td>
+                            <div class="avoid"><%= receiver2 %></div>
+                          </td>
+                          <td>
+                            <div class="avoid"><%= amount2 %></div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <div class="avoid"><%= bNumber %></div>
+                          </td>
+                          <td>
+                            <div class="avoid"><%= hash3 %></div>
+                          </td>
+                          <td>
+                            <div class="avoid"><%= sender3 %></div>
+                          </td>
+                          <td>
+                            <div class="avoid"><%= receiver3 %></div>
+                          </td>
+                          <td>
+                            <div class="avoid"><%= amount3 %></div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <div class="avoid"><%= bNumber %></div>
+                          </td>
+                          <td>
+                            <div class="avoid"><%= hash4 %></div>
+                          </td>
+                          <td>
+                            <div class="avoid"><%= sender4 %></div>
+                          </td>
+                          <td>
+                            <div class="avoid"><%= receiver4 %></div>
+                          </td>
+                          <td>
+                            <div class="avoid"><%= amount4 %></div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <div class="avoid"><%= bNumber %></div>
+                          </td>
+                          <td>
+                            <div class="avoid"><%= hash5 %></div>
+                          </td>
+                          <td>
+                            <div class="avoid"><%= sender5 %></div>
+                          </td>
+                          <td>
+                            <div class="avoid"><%= receiver5 %></div>
+                          </td>
+                          <td>
+                            <div class="avoid"><%= amount5 %></div>
+                          </td>
+                        </tr>
+              </tbody>
+            </table>
             <!-- /.row-->
-            <div class="row">
+            <!--div class="row">
               <div class="col-md-12">
                 <div class="card">
                   <div class="card-header">Last block transactions detail</div>
                   <div class="card-body">
-                    
+                    <br>
                     <table class="table table-responsive-sm table-hover table-outline mb-0">
                       <thead class="thead-light">
                         <tr>
@@ -123,7 +224,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <!-- First -->
+
                         <tr>
                           <td class="text-center text-black-50">
                             <div class="avoid"><%= bNumber %></div>
@@ -141,7 +242,7 @@
                             <div class="avoid"><%= amount1 %></div>
                           </td>
                         </tr>
-                        <!-- Second -->
+
                         <tr>
                           <td class="text-center text-black-50">
                             <div class="avoid"><%= bNumber %></div>
@@ -159,7 +260,7 @@
                             <div class="avoid"><%= amount2 %></div>
                           </td>
                         </tr>
-                        <!-- Third -->
+
                         <tr>
                           <td class="text-center text-black-50">
                             <div class="avoid"><%= bNumber %></div>
@@ -177,7 +278,7 @@
                             <div class="avoid"><%= amount3 %></div>
                           </td>
                         </tr>
-                        <!-- Fourth -->
+
                         <tr>
                           <td class="text-center text-black-50">
                             <div class="avoid"><%= bNumber %></div>
@@ -195,7 +296,7 @@
                             <div class="avoid"><%= amount4 %></div>
                           </td>
                         </tr>
-                        <!-- Fifth -->
+
                         <tr>
                           <td class="text-center text-black-50">
                             <div class="avoid"><%= bNumber %></div>
@@ -213,15 +314,16 @@
                             <div class="avoid"><%= amount5 %></div>
                           </td>
                         </tr>
-                        <!-- End -->
+
                       </tbody>
                     </table>
+                  </br>
                   </div>
                 </div>
               </div>
-              <!-- /.col-->
-            </div>
-            <!-- /.row-->
+
+            </div-->
+
           </div>
         </div>
       </main>
@@ -249,4 +351,4 @@
     <script src="node_modules/@coreui/coreui-plugin-chartjs-custom-tooltips/dist/js/custom-tooltips.min.js"></script>
     <script src="js/main.js"></script>
   </body>
-</html>
+  </html>
