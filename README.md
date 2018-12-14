@@ -1,12 +1,15 @@
 # EthereumStats
 
-By fcepeda and syerbes.
+# Scope
 
-Description:
+This is a project to track transactions in Ethereum's blockchain, generating an output graph with the corresponding wallets as nodes. Additionaly, you can apply a function to the original graph (like centrality) to get additional information. 
 
-This is a project to track transactions in Ethereum's blockchain, generating an output graph with the corresponding nodes after applying a function (like centrality). 
+There are fixed paths in the code that should be changed/created to preserve the directory structure.
 
-There are set paths in the code that should be changed/created to match the host pc requirements.
+We use a local Geth client to access the public chain, accessing it through IPC. The IPC access mechanism can be easily modified to another one (like a REST API), although it can impact performance.
 
-We use the public chain downloaded locally, accessing it via web3 through IPC. The IPC access mechanism can be easily modified to another one (like a REST API), although it
-can degrade performance.
+# Dependencies
+
+* web3
+* MongoDB
+* (Optional) Cassandra
