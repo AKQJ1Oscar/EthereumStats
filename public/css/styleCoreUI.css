@@ -1488,12 +1488,6 @@ pre code {
   background-color: transparent;
 }
 
-.table th,
-.table td {
-  padding: 0.75rem;
-  vertical-align: top;
-  border-top: 1px solid #c8ced3;
-}
 
 .table thead th {
   vertical-align: bottom;
@@ -8332,6 +8326,13 @@ button.bg-dark:focus {
   text-align: center !important;
 }
 
+.text-no-overflow {
+    width: 20%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 @media (min-width: 576px) {
   .text-sm-left {
     text-align: left !important;
@@ -8558,6 +8559,7 @@ a.text-dark:hover, a.text-dark:focus {
   .table {
     border-collapse: collapse !important;
   }
+
   .table td,
   .table th {
     background-color: #fff !important;
@@ -8578,6 +8580,10 @@ a.text-dark:hover, a.text-dark:focus {
   .table .thead-dark th {
     color: inherit;
     border-color: #c8ced3;
+  }
+  .avoid td, th{
+    page-break-inside: avoid !important;
+    margin: 4px 0 4px 0;  /* to keep the page break from cutting too close to the text in the div */
   }
 }
 

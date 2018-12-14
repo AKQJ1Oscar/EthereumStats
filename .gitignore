@@ -1,3 +1,4 @@
 mongoDB/*
 node_modules/
 mongodb/*
+/*.log

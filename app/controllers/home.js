@@ -20,12 +20,8 @@ const MONGO_URI = "mongodb://127.0.0.1:27017";
 // --- PROD
 // Using the IPC provider in node.js
 const GETH_IPC_PATH = '/ethereum/red-principal/geth.ipc';
-//var web3 = new Web3();
-//web3.setProvider(GETH_IPC_PATH, net);
-
-// --- DEV
-var APIKEY = "1b3a2b15af6a404b8b010d742c9ff922";
-web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/' + APIKEY));
+var web3 = new Web3();
+web3.setProvider(GETH_IPC_PATH, net);
 
 
 var express = require('express'),
@@ -46,10 +42,7 @@ router.get('/', function(req, res) {
 })
 
 router.get('/index.html', function(req, res) {
-  res.render('index', {
-    title: 'Ethereum Tracking',
-    notFound: ""
-  })
+  renderIndex(res);
 })
 
 router.get('/tx', function(req, res) {
@@ -58,6 +51,11 @@ router.get('/tx', function(req, res) {
     notFound: "<"
   })
 })
+
+router.get('/wallets', function(req, res) {
+  renderIndex(res);
+})
+
 
 // Calls the function to get a random tx
 router.get('/getTxRandom', function(req, res) {
@@ -361,9 +359,63 @@ function printTrans(pintar, res, txList, type, accounts, accToSearch) {
 // --- End of sequential and real-time tracking ---
 
 
-// --- Populate Mongo ---
+// --- Get from MongoDB ---
 
-//
+
+// Get the graph for this wallet
+router.get('/wallets/getWalletTree', function(req, res) {
+  var nodes = 250;
+  //TODO implement level threshold
+  //var levels = 3;
+  var levels = "";
+  var txList = [];
+  var type = req.query.type;
+
+  var currentNumberOfBlocks = 400000;
+  var chosenBlockNumber = Math.random() * (currentNumberOfBlocks);
+  var chosenBlock = Math.round(chosenBlockNumber);
+  chosenBlock = 5000000 + chosenBlock;
+
+  if (req.query.nodeNum != "" && req.query.nodeNum != null && req.query.nodeNum != undefined) {
+    nodes = req.query.nodeNum;
+  }
+
+  // Regex worth it?
+  //TODO Change to wallet
+  var wallet = req.query.wallet;
+  //resGlobal = res;
+  if (wallet == "" || wallet == null || wallet == undefined) {
+    getRandomWallet(chosenBlock, res, nodes, levels, type);
+  } else {
+    //getWalletTreeFromCassandra(res, wallet, nodes, levels, type);
+    getWalletTreeFromMongo(res, wallet, nodes, levels, type);
+  }
+});
+
+
+//Choose a random wallet from a stored block 
+function getRandomWallet(chosenBlock, res, nodes, levels, type) {
+  var respuesta = "";
+  var txLength = 0;
+
+  web3.eth.getBlock(chosenBlock, true, function(error, result) {
+    if (error != null) {
+      console.error("An error ocurred while getting the block. " + error);
+      throw error;
+    }
+    if (result != null) {
+      if (result.transactions.length > 0) {
+        txLength = result.transactions.length;
+        var chosenTxNumber = Math.random() * (txLength - 1);
+        var chosenTx = Math.round(chosenTxNumber);
+        var wallet = result.transactions[chosenTx].from;
+        console.log("First wallet is " + wallet);
+        //getWalletTreeFromCassandra(res, wallet, nodes, levels, type);
+        getWalletTreeFromMongo(res, wallet, nodes, levels, type);
+      }
+    }
+  });
+};
 
 
 function getWalletTreeFromMongo(res, wallet, nodes, levels, type) {
@@ -492,159 +544,13 @@ async function getReceiversForWalletInMongo(accList, res, type, accounts, nodes,
       accList.delete(wallet);
       getReceiversForWalletInMongo(accList, res, type, accounts, nodes, dbo, db);
     }
-
-
-    //cursor.forEach(function(result) {
-    /*
-        dbo.collection('Transaction').find(query, function(err, result) {
-          if (err) {
-            console.log(err);
-            throw err;
-          }
-
-          var contador = 0;
-
-        
-
-        
-        
-                console.log("Contador es " + contador);
-                console.log("Results length IS : " + results.length);
-                console.log("Results is" + results.toString());
-
-
-                console.log("Results array is " + results.toString());
-
-
-
-                if (result.length > 0) {
-                  // Receivers size for this wallet
-                  var size = result.length;
-                  console.log(size + " receivers for this wallet");
-                  console.log("Size is " + size + " for wallet" + wallet);
-                  // Number of remaining nodes to add 
-                  var remainingSize = nodes - accounts.length;
-
-
-                  // Max nodes number reached in this iteration
-                  if (size >= remainingSize) {
-                    size = remainingSize;
-                    for (var i = 0; i < size; i++) {
-                      //console.log(result.rows[0].receivers[i]);
-                      var receiver = result[0].wallet;
-                      var amount = result[0].amount;
-                      var hash = result[0].hash;
-                      //console.log("RECEIVER is " + receiver + " AMOUNT is " + amount + " HASH is " + hash);
-                      if (wallet != null && wallet != "" && wallet != undefined &&
-                        receiver != null && receiver != "" && receiver != undefined &&
-                        hash != null && hash != "" && hash != undefined) {
-                        //console.log("adding wallet\n");
-                        accounts.push([wallet, receiver, 1, amount, hash]);
-                      }
-
-                    }
-                    console.log("Nodes limit achieved. Printing and exiting");
-                    //console.log("Accounts is " + accounts);
-                    printTransCassandra(res, type, accounts);
-                    return db.close();
-                  } else {
-                    for (var i = 0; i < size; i++) {
-                      //console.log(result.rows[0].receivers[i]);
-                      var receiver = result[0].receiver;
-                      var amount = result[0].amount;
-                      var hash = result[0].hash;
-                      //console.log("RECEIVER is " + receiver + " AMOUNT is " + amount + " HASH is " + hash);
-                      if (wallet != null && wallet != "" && wallet != undefined &&
-                        receiver != null && receiver != "" && receiver != undefined &&
-                        hash != null && hash != "" && hash != undefined) {
-                        //console.log("adding wallet\n");
-                        accounts.push([wallet, receiver, 1, amount, hash]);
-                        accList.add(receiver);
-                      }
-                    }
-                    accList.delete(wallet);
-                    getReceiversForWalletInMongo(accList, res, type, accounts, nodes, dbo, db);
-                  }
-
-                } else {
-                  console.log("[WARN] Wallet " + wallet + " does not have any receivers.");
-                  accList.delete(wallet);
-                  getReceiversForWalletInMongo(accList, res, type, accounts, nodes, dbo, db);
-                }
-
-                
-        });
-    */
   }
 }
 
-
-
-async function getTxsFromWallet(resutlt) {
-
-
-
-}
 
 
 
 // --- CASSANDRA START  ---
-
-
-
-//Choose a random wallet from a stored block 
-function getRandomWallet(chosenBlock, res, nodes, levels, type) {
-  var respuesta = "";
-  var txLength = 0;
-
-  web3.eth.getBlock(chosenBlock, true, function(error, result) {
-    if (error != null) {
-      console.error("An error ocurred while getting the block. " + error);
-      throw error;
-    }
-    if (result != null) {
-      if (result.transactions.length > 0) {
-        txLength = result.transactions.length;
-        var chosenTxNumber = Math.random() * (txLength - 1);
-        var chosenTx = Math.round(chosenTxNumber);
-        var wallet = result.transactions[chosenTx].from;
-        console.log("First wallet is " + wallet);
-        //getWalletTreeFromCassandra(res, wallet, nodes, levels, type);
-        getWalletTreeFromMongo(res, wallet, nodes, levels, type);
-      }
-    }
-  });
-};
-
-// Get the graph for this wallet
-router.get('/getWalletTree', function(req, res) {
-  var nodes = 250;
-  //TODO implement level threshold
-  //var levels = 3;
-  var levels = "";
-  var txList = [];
-  var type = req.query.type;
-
-  var currentNumberOfBlocks = 400000;
-  var chosenBlockNumber = Math.random() * (currentNumberOfBlocks);
-  var chosenBlock = Math.round(chosenBlockNumber);
-  chosenBlock = 5000000 + chosenBlock;
-
-  if (req.query.nodeNum != "" && req.query.nodeNum != null && req.query.nodeNum != undefined) {
-    nodes = req.query.nodeNum;
-  }
-
-  // Regex worth it?
-  //TODO Change to wallet
-  var wallet = req.query.wallet;
-  //resGlobal = res;
-  if (wallet == "" || wallet == null || wallet == undefined) {
-    getRandomWallet(chosenBlock, res, nodes, levels, type);
-  } else {
-    //getWalletTreeFromCassandra(res, wallet, nodes, levels, type);
-    getWalletTreeFromMongo(res, wallet, nodes, levels, type);
-  }
-});
 
 
 
@@ -816,18 +722,43 @@ function printTransCassandra(res, type, accounts) {
 //Render index
 async function renderIndex(res) {
   web3.eth.getBlockNumber().then(function(block) {
-    web3.eth.getBlock(block, false, function(error, result) {
+    web3.eth.getBlock(block, true, function(error, result) {
       if (error) {
         //TODO render error page
         throw err;
       }
-      console.log(block);
-      console.log(result);
+
+      for (var i = 0; i<5; i++){
+        console.log(result.transactions[i]);
+      }
+      //TODO sanitize all data
+
       res.render('index', {
         bNumber: block,
         miner: result.miner,
         difficulty: result.totalDifficulty,
-        txNumber: result.transactions.length
+        txNumber: result.transactions.length,
+        hash1:  (result.transactions[0].hash == false ? null : result.transactions[0].hash.toString().substring(0,9) + "..."),
+        sender1: result.transactions[0].from.toString().substring(0,9) + "...",
+        receiver1: (result.transactions[0].to == false ? null : result.transactions[0].to.toString().substring(0,9) + "..."),
+        amount1: result.transactions[0].value / 1000000000000000000,
+        hash2: result.transactions[1].hash.toString().substring(0,9) + "...",
+        sender2: result.transactions[1].from.toString().substring(0,9) + "...",
+        receiver2: (result.transactions[1].to == false ? null : result.transactions[1].to.toString().substring(0,9) + "..."),
+        amount2: result.transactions[1].value / 1000000000000000000,
+        hash3: result.transactions[2].hash.toString().substring(0,9) + "...",
+        sender3: result.transactions[2].from.toString().substring(0,9) + "...",
+        receiver3: (result.transactions[2].to == false ? null : result.transactions[2].to.toString().substring(0,9) + "..."),
+        amount3: result.transactions[2].value / 1000000000000000000,
+        hash4: result.transactions[3].hash.toString().substring(0,9) + "...",
+        sender4: result.transactions[3].from.toString().substring(0,9) + "...",
+        receiver4: (result.transactions[3].to == false ? null : result.transactions[3].to.toString().substring(0,9) + "..."),
+        amount4: result.transactions[4].value / 1000000000000000000,
+        hash5: result.transactions[4].hash.toString().substring(0,9) + "...",
+        sender5: result.transactions[4].from.toString().substring(0,9) + "...",
+        receiver5: (result.transactions[4].to == false ? null : result.transactions[4].to.toString().substring(0,9) + "..."),
+        amount5: result.transactions[4].value / 1000000000000000000,
+
       });
     });
   });

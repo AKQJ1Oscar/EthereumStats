@@ -50,8 +50,8 @@
                   <div class="card-body pb-0">
                     <div class="btn-group float-right">
                     </div>
-                    <div class="text-center"><%= bNumber %></div>
                     <div class="text-center">Last block</div>
+                    <div class="text-center"><%= bNumber %></div>
                   </div>
                   <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
                     <canvas class="chart" id="card-chart1" height="70"></canvas>
@@ -62,8 +62,8 @@
               <div class="col-sm-6 col-lg-3">
                 <div class="card text-white bg-info">
                   <div class="card-body pb-0">
-                    <div class="text-center"><%= miner %></div>
                     <div class="text-center">Last miner</div>
+                    <div class="text-center"><%= miner %></div>
                   </div>
                   <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
                     <canvas class="chart" id="card-chart2" height="70"></canvas>
@@ -76,8 +76,8 @@
                   <div class="card-body pb-0">
                     <div class="btn-group float-right">
                     </div>
-                    <div class="text-center"><%= difficulty %></div>
                     <div class="text-center">Difficulty</div>
+                    <div class="text-center"><%= difficulty %></div>
                   </div>
                   <div class="chart-wrapper mt-3" style="height:70px;">
                     <canvas class="chart" id="card-chart3" height="70"></canvas>
@@ -90,8 +90,8 @@
                   <div class="card-body pb-0">
                     <div class="btn-group float-right">
                     </div>
-                    <div class="text-center"><%= txNumber %></div>
                     <div class="text-center">Last block #txs</div>
+                    <div class="text-center"><%= txNumber %></div>
                   </div>
                   <div class="chart-wrapper mt-3" style="height:70px;">
                     <canvas class="chart" id="card-chart4" height="70"></canvas>
@@ -115,7 +115,7 @@
                           <th class="text-center">
                             <i class="icon-people"></i>
                           </th>
-                          <th class="text-center">Block number</th>
+                          <th class="text-center ">Block number</th>
                           <th class="text-center">Transaction hash</th>
                           <th class="text-center">Sender</th>
                           <th class="text-center">Receiver</th>
@@ -123,37 +123,97 @@
                         </tr>
                       </thead>
                       <tbody>
+                        <!-- First -->
                         <tr>
-                          <td class="text-center>
-                            <div>Yiorgos Avraamu</div>
-                            <div class="small text-muted">
-                              <span>New</span> | Registered: Jan 1, 2015</div>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= bNumber %></div>
                           </td>
-                          <td class="text-center">
-                            <i class="flag-icon flag-icon-us h4 mb-0" id="us" title="us"></i>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= hash1 %></div>
                           </td>
-                          <td class="text-center>
-                            <div class="clearfix">
-                              <div class="float-left">
-                                <strong>50%</strong>
-                              </div>
-                              <div class="float-right">
-                                <small class="text-muted">Jun 11, 2015 - Jul 10, 2015</small>
-                              </div>
-                            </div>
-                            <div class="progress progress-xs">
-                              <div class="progress-bar bg-success" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= sender1 %></div>
                           </td>
-                          <td class="text-center">
-                            <i class="fa fa-cc-mastercard" style="font-size:24px"></i>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= receiver1 %></div>
                           </td>
-                          <td class="text-center>
-                            <div class="small text-muted">Last login</div>
-                            <strong>10 sec ago</strong>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= amount1 %></div>
                           </td>
                         </tr>
-                        
+                        <!-- Second -->
+                        <tr>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= bNumber %></div>
+                          </td>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= hash2 %></div>
+                          </td>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= sender2 %></div>
+                          </td>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= receiver2 %></div>
+                          </td>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= amount2 %></div>
+                          </td>
+                        </tr>
+                        <!-- Third -->
+                        <tr>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= bNumber %></div>
+                          </td>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= hash3 %></div>
+                          </td>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= sender3 %></div>
+                          </td>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= receiver3 %></div>
+                          </td>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= amount3 %></div>
+                          </td>
+                        </tr>
+                        <!-- Fourth -->
+                        <tr>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= bNumber %></div>
+                          </td>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= hash4 %></div>
+                          </td>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= sender4 %></div>
+                          </td>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= receiver4 %></div>
+                          </td>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= amount4 %></div>
+                          </td>
+                        </tr>
+                        <!-- Fifth -->
+                        <tr>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= bNumber %></div>
+                          </td>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= hash5 %></div>
+                          </td>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= sender5 %></div>
+                          </td>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= receiver5 %></div>
+                          </td>
+                          <td class="text-center text-black-50">
+                            <div class="avoid"><%= amount5 %></div>
+                          </td>
+                        </tr>
+                        <!-- End -->
                       </tbody>
                     </table>
                   </div>
