@@ -48,13 +48,14 @@ router.get('/index.html', function(req, res) {
 
 router.get('/tx', function(req, res) {
   res.render('tx', {
-    title: 'Ethereum Tracking',
-    notFound: "<"
+    title: 'Tracether'
   })
 })
 
 router.get('/wallets', function(req, res) {
-  renderIndex(res);
+  res.render('formIndex', {
+    title: 'Tracether'
+  })
 })
 
 

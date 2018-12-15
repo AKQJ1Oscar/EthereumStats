@@ -247,7 +247,7 @@ function txTrackingPopulation(dbo, batchSize, start, end, iterationCounter, db) 
 
 
 
-// ------------------ Populate Mongo with Blocks: {number, transactions (hash, sender, receiver, amount), miner}
+// ------------------ Populate Mongo With Blocks: {number, transactions (hash, sender, receiver, amount), miner}
 
 module.exports.toMongo = function() {
   populateDatabase();
