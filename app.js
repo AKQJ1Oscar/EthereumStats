@@ -3,9 +3,7 @@ var express = require('express'),
   glob = require('glob'),
 
 var models = glob.sync(config.root + '/app/models/*.js');
-models.forEach(function (model) {
-  require(model);
-});
+
 var app = express();
 
 module.exports = require('./config/express')(app, config);
