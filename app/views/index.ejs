@@ -108,7 +108,6 @@
                 <div class="card">
                   <div class="card-header text-center text-black-50 h3"><strong>Last transactions</strong></div>
                   <div class="card-body">
-                    
                     <!-- /.row-->
                     <br>
                     <table class="table table-responsive-sm table-hover table-outline mb-0">
@@ -122,97 +121,15 @@
                         </tr>
                       </thead>
                       <tbody>
+                        <% for (var i = 0; i < lastBlock.length; i++) { %>
                         <tr>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div id="parent">
-                            <div class="avoid" id="pepito"><%= bNumber %></div>
-                          </div>
-                          </td>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= hash1 %></div>
-                          </td>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= sender1 %></div>
-                          </td>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= receiver1 %></div>
-                          </td>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= amount1 %></div>
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= bNumber %></div>
-                          </td>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= hash2 %></div>
-                          </td>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= sender2 %></div>
-                          </td>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= receiver2 %></div>
-                          </td>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= amount2 %></div>
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= bNumber %></div>
-                          </td>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= hash3 %></div>
-                          </td>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= sender3 %></div>
-                          </td>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= receiver3 %></div>
-                          </td>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= amount3 %></div>
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= bNumber %></div>
-                          </td>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= hash4 %></div>
-                          </td>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= sender4 %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= receiver4 %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= amount4 %></div>
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= bNumber %></div>
-                          </td>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= hash5 %></div>
-                          </td>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= sender5 %></div>
-                          </td>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= receiver5 %></div>
-                          </td>
-                          <td class="text-center text-black-50" style="word-break: break-all">
-                            <div class="avoid"><%= amount5 %></div>
-                          </td>
-                        </tr>
+                          <td class="text-center text-black-50" style="word-break: break-all"><div class="avoid"><%= bNumber %></div></td>
+                          <td class="text-center text-black-50" style="word-break: break-all"><div class="avoid"><%= lastBlock[i].hash %></div></td>
+                          <td class="text-center text-black-50" style="word-break: break-all"><div class="avoid"><%= lastBlock[i].sender %></div></td>
+                          <td class="text-center text-black-50" style="word-break: break-all"><div class="avoid"><%= lastBlock[i].receiver %></div></td>
+                          <td class="text-center text-black-50" style="word-break: break-all"><div class="avoid"><%= lastBlock[i].amount %></div></td>
+                        </tr>    
+                        <% } %>
                       </tbody>
                     </table>
                   </div>

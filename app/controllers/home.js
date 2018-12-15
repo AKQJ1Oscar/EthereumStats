@@ -723,10 +723,20 @@ async function renderIndex(res) {
         //TODO render error page
         throw err;
       }
-
-      for (var i = 0; i<5; i++){
-        console.log(result.transactions[i]);
+      var lastBlock = new Array();
+      for (var i = 0; i<result.transactions.length; i++){
+        var data = {};
+        data.hash = result.transactions[i].hash;
+        data.sender = result.transactions[i].from;
+        data.receiver = result.transactions[i].to;
+        if (result.transactions[i].value != null) {
+          data.amount = (result.transactions[i].value / 1000000000000000000).toString().substring(0,4);  
+        } else {
+          data.amount = result.transactions[i].value;
+        }
+        lastBlock.push(data);
       }
+      console.log(lastBlock);
       //TODO sanitize all data
 
       res.render('index', {
@@ -735,6 +745,8 @@ async function renderIndex(res) {
         miner: result.miner,
         difficulty: result.totalDifficulty,
         txNumber: result.transactions.length,
+        lastBlock : lastBlock
+        /*
         hash1:  (result.transactions[0].hash == false ? null : result.transactions[0].hash),
         sender1: result.transactions[0].from.toString(),
         receiver1: (result.transactions[0].to == false ? null : result.transactions[0].to),
@@ -755,7 +767,7 @@ async function renderIndex(res) {
         sender5: result.transactions[4].from,
         receiver5: (result.transactions[4].to == false ? null : result.transactions[4].to),
         amount5: (result.transactions[4].value / 1000000000000000000).toString().substring(0,4),
-        
+        */
       });
     });
   });
