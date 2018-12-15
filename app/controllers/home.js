@@ -20,13 +20,8 @@ const MONGO_URI = "mongodb://127.0.0.1:27017";
 // --- PROD
 // Using the IPC provider in node.js
 const GETH_IPC_PATH = '/ethereum/red-principal/geth.ipc';
-//var web3 = new Web3();
-//web3.setProvider(GETH_IPC_PATH, net);
-
-// --- DEV
-var APIKEY = "1b3a2b15af6a404b8b010d742c9ff922";
-web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/' + APIKEY));
-
+var web3 = new Web3();
+web3.setProvider(GETH_IPC_PATH, net);
 
 
 var express = require('express'),
@@ -904,7 +899,7 @@ function generateJSON(res, accounts, type) {
   };
 
   try {
-    fs.writeFileSync('/home/ether/EthereumTracking/TFM/EthereumStats/public/result.json', JSON.stringify(jsonOutput), 'utf8');
+    fs.writeFileSync('/home/ether/EthereumTracking/TFM/EthereumStats/public/wallets/result.json', JSON.stringify(jsonOutput), 'utf8');
   } catch (error) {
     console.log("Error while writing result.json");
     //TODO render error page
