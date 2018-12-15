@@ -24,6 +24,7 @@ var web3 = new Web3();
 web3.setProvider(GETH_IPC_PATH, net);
 
 
+
 var express = require('express'),
   router = express.Router();
 
@@ -736,7 +737,7 @@ async function renderIndex(res) {
         }
         lastBlock.push(data);
       }
-      console.log(lastBlock);
+      //console.log(lastBlock);
       //TODO sanitize all data
 
       res.render('index', {
@@ -746,28 +747,6 @@ async function renderIndex(res) {
         difficulty: result.totalDifficulty,
         txNumber: result.transactions.length,
         lastBlock : lastBlock
-        /*
-        hash1:  (result.transactions[0].hash == false ? null : result.transactions[0].hash),
-        sender1: result.transactions[0].from.toString(),
-        receiver1: (result.transactions[0].to == false ? null : result.transactions[0].to),
-        amount1: (result.transactions[0].value / 1000000000000000000).toString().substring(0,4),
-        hash2: result.transactions[1].hash,
-        sender2: result.transactions[1].from,
-        receiver2: (result.transactions[1].to == false ? null : result.transactions[1].to),
-        amount2: (result.transactions[1].value / 1000000000000000000).toString().substring(0,4),
-        hash3: result.transactions[2].hash,
-        sender3: result.transactions[2].from,
-        receiver3: (result.transactions[2].to == false ? null : result.transactions[2].to),
-        amount3: (result.transactions[2].value / 1000000000000000000).toString().substring(0,4),
-        hash4: result.transactions[3].hash,
-        sender4: result.transactions[3].from,
-        receiver4: (result.transactions[3].to == false ? null : result.transactions[3].to),
-        amount4: (result.transactions[4].value / 1000000000000000000).toString().substring(0,4),
-        hash5: result.transactions[4].hash,
-        sender5: result.transactions[4].from,
-        receiver5: (result.transactions[4].to == false ? null : result.transactions[4].to),
-        amount5: (result.transactions[4].value / 1000000000000000000).toString().substring(0,4),
-        */
       });
     });
   });
