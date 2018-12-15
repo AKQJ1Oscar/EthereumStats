@@ -158,7 +158,9 @@ function RCallPageRank(res, accounts) {
   //  res.render('response');
   //});
   console.log("rendering...");
-  res.render('response');
+  res.render('response', {
+    title: 'Tracether'
+  })
 }
 
 
