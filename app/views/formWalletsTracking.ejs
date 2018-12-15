@@ -1,7 +1,7 @@
 <p>The option below is used to determine when to stop searching while creating the tree. The range of values goes from 1 to 500 for 
 the transactions setting.</p>
 
-<form id="getWalletTree" action="/getWalletTree" method="get">
+<form id="getWalletTree" action="/wallets/getWalletTree" method="get">
   <div class="form-group">
     <label>Maximum number of transactions the tree can have:</label>
     <input type="number" min="1" max="500" step="1" class="form-control" name="nodeNum" id="nodeNum" placeholder="Transactions number (natural number). Default 250.">
