@@ -23,6 +23,10 @@ const GETH_IPC_PATH = '/ethereum/red-principal/geth.ipc';
 //var web3 = new Web3();
 //web3.setProvider(GETH_IPC_PATH, net);
 
+// --- DEV
+var APIKEY = "1b3a2b15af6a404b8b010d742c9ff922";
+web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/' + APIKEY));
+
 
 
 var express = require('express'),
@@ -107,17 +111,14 @@ router.get('/getTxTree', function(req, res) {
 
 // Called when req.query.type is normal
 function RCallNormal(res, accounts) {
-  /*
   var out = R("/home/ether/EthereumTracking/TFM/R/betweenness.R")
     .data()
     .callSync();
   generateJSON(res, accounts, "normal");
   console.log("rendering...");
-  res.render('index', {
+  res.render('response', {
     title: 'Tracether'
   })
-  */
-  renderIndex(res);
 }
 
 // Called when req.query.type is etweenness
