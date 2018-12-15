@@ -119,7 +119,9 @@ function RCallNormal(res, accounts) {
   //  res.render('response');
   //});
   console.log("rendering...");
-  res.render('response');
+  res.render('response', {
+    title: 'Tracether'
+  })
 }
 
 // Called when req.query.type is etweenness
@@ -132,7 +134,9 @@ function RCallBetween(res, accounts) {
   //  res.render('response');
   //});
   console.log("rendering...");
-  res.render('response');
+  res.render('response', {
+    title: 'Tracether'
+  })
 }
 
 // Called when req.query.type is closeness
@@ -145,7 +149,9 @@ function RCallCloseness(res, accounts) {
   //  res.render('response');
   //});
   console.log("rendering...");
-  res.render('response');
+  res.render('response', {
+    title: 'Tracether'
+  })
 }
 
 // Called when req.query.type is pageRank
