@@ -20,13 +20,8 @@ const MONGO_URI = "mongodb://127.0.0.1:27017";
 // --- PROD
 // Using the IPC provider in node.js
 const GETH_IPC_PATH = '/ethereum/red-principal/geth.ipc';
-//var web3 = new Web3();
-//web3.setProvider(GETH_IPC_PATH, net);
-
-// --- DEV
-var APIKEY = "1b3a2b15af6a404b8b010d742c9ff922";
-web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/' + APIKEY));
-
+var web3 = new Web3();
+web3.setProvider(GETH_IPC_PATH, net);
 
 
 var express = require('express'),
@@ -735,31 +730,32 @@ async function renderIndex(res) {
       //TODO sanitize all data
 
       res.render('index', {
+        title: "Tracether",
         bNumber: block,
         miner: result.miner,
         difficulty: result.totalDifficulty,
         txNumber: result.transactions.length,
-        hash1:  (result.transactions[0].hash == false ? null : result.transactions[0].hash.toString().substring(0,20) + "..."),
-        sender1: result.transactions[0].from.toString().substring(0,20) + "...",
-        receiver1: (result.transactions[0].to == false ? null : result.transactions[0].to.toString().substring(0,20) + "..."),
+        hash1:  (result.transactions[0].hash == false ? null : result.transactions[0].hash),
+        sender1: result.transactions[0].from.toString(),
+        receiver1: (result.transactions[0].to == false ? null : result.transactions[0].to),
         amount1: (result.transactions[0].value / 1000000000000000000).toString().substring(0,4),
-        hash2: result.transactions[1].hash.toString().substring(0,20) + "...",
-        sender2: result.transactions[1].from.toString().substring(0,20) + "...",
-        receiver2: (result.transactions[1].to == false ? null : result.transactions[1].to.toString().substring(0,20) + "..."),
+        hash2: result.transactions[1].hash,
+        sender2: result.transactions[1].from,
+        receiver2: (result.transactions[1].to == false ? null : result.transactions[1].to),
         amount2: (result.transactions[1].value / 1000000000000000000).toString().substring(0,4),
-        hash3: result.transactions[2].hash.toString().substring(0,20) + "...",
-        sender3: result.transactions[2].from.toString().substring(0,20) + "...",
-        receiver3: (result.transactions[2].to == false ? null : result.transactions[2].to.toString().substring(0,20) + "..."),
+        hash3: result.transactions[2].hash,
+        sender3: result.transactions[2].from,
+        receiver3: (result.transactions[2].to == false ? null : result.transactions[2].to),
         amount3: (result.transactions[2].value / 1000000000000000000).toString().substring(0,4),
-        hash4: result.transactions[3].hash.toString().substring(0,20) + "...",
-        sender4: result.transactions[3].from.toString().substring(0,20) + "...",
-        receiver4: (result.transactions[3].to == false ? null : result.transactions[3].to.toString().substring(0,20) + "..."),
+        hash4: result.transactions[3].hash,
+        sender4: result.transactions[3].from,
+        receiver4: (result.transactions[3].to == false ? null : result.transactions[3].to),
         amount4: (result.transactions[4].value / 1000000000000000000).toString().substring(0,4),
-        hash5: result.transactions[4].hash.toString().substring(0,20) + "...",
-        sender5: result.transactions[4].from.toString().substring(0,20) + "...",
-        receiver5: (result.transactions[4].to == false ? null : result.transactions[4].to.toString().substring(0,20) + "..."),
+        hash5: result.transactions[4].hash,
+        sender5: result.transactions[4].from,
+        receiver5: (result.transactions[4].to == false ? null : result.transactions[4].to),
         amount5: (result.transactions[4].value / 1000000000000000000).toString().substring(0,4),
-
+        
       });
     });
   });
