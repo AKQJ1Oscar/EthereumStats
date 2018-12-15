@@ -23,10 +23,6 @@ const GETH_IPC_PATH = '/ethereum/red-principal/geth.ipc';
 //var web3 = new Web3();
 //web3.setProvider(GETH_IPC_PATH, net);
 
-// --- DEV
-var APIKEY = "1b3a2b15af6a404b8b010d742c9ff922";
-web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/' + APIKEY));
-
 
 
 var express = require('express'),
@@ -111,17 +107,17 @@ router.get('/getTxTree', function(req, res) {
 
 // Called when req.query.type is normal
 function RCallNormal(res, accounts) {
+  /*
   var out = R("/home/ether/EthereumTracking/TFM/R/betweenness.R")
     .data()
     .callSync();
   generateJSON(res, accounts, "normal");
-  //exec('cp /home/ether/EthereumTracking/TFM/R/TreeResponse.html /home/ether/EthereumTracking/TFM/EthereumStats/app/views/', function callback(error, stdout, stderr) {
-  //  res.render('response');
-  //});
   console.log("rendering...");
-  res.render('response', {
+  res.render('index', {
     title: 'Tracether'
   })
+  */
+  renderIndex(res);
 }
 
 // Called when req.query.type is etweenness
@@ -130,9 +126,6 @@ function RCallBetween(res, accounts) {
     .data()
     .callSync();
   generateJSON(res, accounts, "betweenness");
-  //exec('cp /home/ether/EthereumTracking/TFM/R/TreeResponse.html /home/ether/EthereumTracking/TFM/EthereumStats/app/views/', function callback(error, stdout, stderr) {
-  //  res.render('response');
-  //});
   console.log("rendering...");
   res.render('response', {
     title: 'Tracether'
@@ -145,9 +138,6 @@ function RCallCloseness(res, accounts) {
     .data()
     .callSync();
   generateJSON(res, accounts, "betweenness");
-  //exec('cp /home/ether/EthereumTracking/TFM/R/TreeResponse.html /home/ether/EthereumTracking/TFM/EthereumStats/app/views/', function callback(error, stdout, stderr) {
-  //  res.render('response');
-  //});
   console.log("rendering...");
   res.render('response', {
     title: 'Tracether'
@@ -160,9 +150,6 @@ function RCallPageRank(res, accounts) {
     .data()
     .callSync();
   generateJSON(res, accounts, "betweenness");
-  //exec('cp /home/ether/EthereumTracking/TFM/R/TreeResponse.html /home/ether/EthereumTracking/TFM/EthereumStats/app/views/', function callback(error, stdout, stderr) {
-  //  res.render('response');
-  //});
   console.log("rendering...");
   res.render('response', {
     title: 'Tracether'
