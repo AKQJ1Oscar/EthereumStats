@@ -23,6 +23,9 @@ const GETH_IPC_PATH = '/ethereum/red-principal/geth.ipc';
 var web3 = new Web3();
 web3.setProvider(GETH_IPC_PATH, net);
 
+// --- DEV
+var APIKEY = "1b3a2b15af6a404b8b010d742c9ff922";
+web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/' + APIKEY));
 
 
 var express = require('express'),
@@ -731,7 +734,7 @@ async function renderIndex(res) {
         data.sender = result.transactions[i].from;
         data.receiver = result.transactions[i].to;
         if (result.transactions[i].value != null) {
-          data.amount = (result.transactions[i].value / 1000000000000000000).toString().substring(0,4);  
+          data.amount = (result.transactions[i].value / 1000000000000000000).toFixed(3).toString();  
         } else {
           data.amount = result.transactions[i].value;
         }
@@ -744,7 +747,7 @@ async function renderIndex(res) {
         title: "Tracether",
         bNumber: block,
         miner: result.miner,
-        difficulty: result.totalDifficulty,
+        difficulty: (result.difficulty / 1000000000000).toFixed(3).toString() + " THash" ,
         txNumber: result.transactions.length,
         lastBlock : lastBlock
       });

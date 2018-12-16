@@ -2,6 +2,11 @@
 	margin-bottom: 0;
 }
 
+.dataTables_filter {
+    float: right;
+    text-align: right;
+}
+
 body {
 	background: #3E4649;
 	color: #f7f7f7;

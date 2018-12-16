@@ -18,9 +18,10 @@
   <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
   <title><%= title %></title>
   <!-- Main styles for this application-->
-  <!--link href="css/style.css" rel="stylesheet"-->
   <link href="css/styleCoreUI.css" rel="stylesheet">
   <link href="vendors/pace-progress/css/pace.min.css" rel="stylesheet">
+  <link href="css/dataTable.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
   <!-- Global site tag (gtag.js) - Google Analytics-->
   <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
   <script>
@@ -50,7 +51,8 @@
                   <div class="card-body pb-0">
                     <div class="btn-group float-right">
                     </div>
-                    <div class="text-center">Last block</div>
+                    <div class="text-center h4">Last block</div>
+                    <br>
                     <div class="text-center text-value h1"><%= bNumber %></div>
                   </div>
                   <div class="chart-wrapper mt-3 mx-3" style="height:60px;">
@@ -62,11 +64,12 @@
               <div class="col-sm-6 col-lg-3">
                 <div class="card text-white bg-info">
                   <div class="card-body pb-0">
-                    <div class="text-center">Last miner</div>
+                    <div class="text-center h4">Last miner</div>
+                    <br><br>
                     <div class="text-center text-value h4"><%= miner %></div>
                   </div>
-                  <div class="chart-wrapper mt-3 mx-3" style="height:65px;">
-                    <canvas class="chart" id="card-chart2" height="65"></canvas>
+                  <div class="chart-wrapper mt-3 mx-3" style="height:50px;">
+                    <canvas class="chart" id="card-chart2" height="50"></canvas>
                   </div>
                 </div>
               </div>
@@ -76,11 +79,12 @@
                   <div class="card-body pb-0">
                     <div class="btn-group float-right">
                     </div>
-                    <div class="text-center">Difficulty</div>
-                    <div class="text-center text-value h4"><%= difficulty %></div>
+                    <div class="text-center h4">Difficulty</div>
+                    <br><br>
+                    <div class="text-center text-value h2"><%= difficulty %></div>
                   </div>
-                  <div class="chart-wrapper mt-3" style="height:87px;">
-                    <canvas class="chart" id="card-chart3" height="87"></canvas>
+                  <div class="chart-wrapper mt-3" style="height:48px;">
+                    <canvas class="chart" id="card-chart3" height="48"></canvas>
                   </div>
                 </div>
               </div>
@@ -90,11 +94,12 @@
                   <div class="card-body pb-0">
                     <div class="btn-group float-right">
                     </div>
-                    <div class="text-center">Last block #txs</div>
+                    <div class="text-center h4">Last block #txs</div>
+                    <br>
                     <div class="text-center text-value h1"><%= txNumber %></div>
                   </div>
-                  <div class="chart-wrapper mt-3" style="height:57px;">
-                    <canvas class="chart" id="card-chart4" height="57"></canvas>
+                  <div class="chart-wrapper mt-3" style="height:59px;">
+                    <canvas class="chart" id="card-chart4" height="59"></canvas>
                   </div>
                 </div>
               </div>
@@ -105,12 +110,13 @@
 
             <div class="row">
               <div class="col-md-12">
-                <div class="card">
+                <div class="card text-black-50">
                   <div class="card-header text-center text-black-50 h3"><strong>Last transactions</strong></div>
                   <div class="card-body">
                     <!-- /.row-->
                     <br>
-                    <table class="table table-responsive-sm table-hover table-outline mb-0">
+                    
+                    <table  id="paginatedTable" class="table table-responsive-sm table-hover table-outline mb-0">
                       <thead class="thead-light">
                         <tr>
                           <th class="text-center">Block number</th>
@@ -132,6 +138,9 @@
                         <% } %>
                       </tbody>
                     </table>
+
+
+
                   </div>
                 </div>
               </div>
@@ -155,18 +164,16 @@
         <a href="https://coreui.io">CoreUI</a>
       </div>
     </footer>
-    <!-- CoreUI and necessary plugins-->
-    <script>
-      var e = document.getElementById('parent');
-      e.onmouseover = function() {
-        document.getElementById('pepito').style.display = 'JUAAAA';
-      }
-      e.onmouseout = function() {
-        document.getElementById('pepito').style.display = 'UEEEEEE';
-      }
 
+    <script>
+      $(document).ready(function() {
+        $('#paginatedTable').DataTable();
+      });
     </script>
+    <!-- CoreUI and necessary plugins-->
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
     <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="node_modules/pace-progress/pace.min.js"></script>
