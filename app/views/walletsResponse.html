@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style type="text/css">
-        .node {}
+        .node { }
         .link { stroke: #999; stroke-opacity: .3; }
     </style>
 </head>
@@ -21,6 +21,10 @@
 
 
 <script type="text/javascript">
+    
+    var radius = 7;
+
+
     var linkStatus = 0;
     var nodeStatus = 0;
     var colors = d3.scaleOrdinal(d3.schemeCategory10);
@@ -29,20 +33,25 @@
         height = +svg.attr("height"),
         node,
         link;
+
+
+           
     svg.append('defs').append('marker')
         .attrs({'id':'arrowhead',
             'viewBox':'-0 -5 10 10',
             'refX':17,
             'refY':0,
             'orient':'auto',
-            'markerWidth':11,
-            'markerHeight':11,
+            'markerWidth':radius,
+            'markerHeight':radius,
             'markerUnits':"userSpaceOnUse",
             'xoverflow':'visible'})
         .append('svg:path')
         .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
         .attr('fill', '#999')
         .style('stroke','none');
+    
+
     var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function (d) {return d.id;}).distance(100).strength(1))
         .force("charge", d3.forceManyBody().strength(-30))
@@ -51,6 +60,7 @@
         if (error) throw error;
         update(graph.links, graph.nodes);
     })
+
     function update(links, nodes) {
         link = svg.selectAll(".link")
             .data(links)
@@ -63,7 +73,7 @@
              var size = (d.tx).slice(indexEther+6,(d.tx).length);
              size = Number(size);
              size = 2*(size + 2);
-             if (size >8){size = 8;};
+             if (size >8){size = 6;};
              return size;
          })
             .on("mouseover", mouseover2)
@@ -103,13 +113,15 @@
                     .on("drag", dragged)
                     .on("end", dragended)
             );
+
         node.append("circle")
-            .attr("r", 8)
+            .attr("r", radius)
             .attr('id', function (d, i) {return 'circle' + i})
             .attr("class","circle")
             .on("mouseover", mouseover)
             .on("mouseout", mouseout)
             .style("fill", function (d) {return d.fill});
+
         simulation
             .nodes(nodes)
             .on("tick", ticked);
@@ -235,14 +247,15 @@
     }
     function ticked() {
         link
-            .attr("x1", function (d) {return d.source.x;})
-            .attr("y1", function (d) {return d.source.y;})
-            .attr("x2", function (d) {return d.target.x;})
-            .attr("y2", function (d) {return d.target.y;});
+            .attr("x1", function (d) {return Math.max(radius, Math.min(width - radius, d.source.x));})
+            .attr("y1", function (d) {return Math.max(radius, Math.min(height - radius, d.source.y));})
+            .attr("x2", function (d) {return Math.max(radius, Math.min(width - radius, d.target.x));})
+            .attr("y2", function (d) {return Math.max(radius, Math.min(height - radius, d.target.y));});
         node
             .attr("transform", function (d) {
-                return "translate(" + d.x + ", " + d.y + ")";                           
+                return "translate(" + Math.max(radius, Math.min(width - radius, d.x)) + ", " + Math.max(radius, Math.min(height - radius, d.y)) + ")";                           
             });
+
         edgepaths.attr('d', function (d) {
             return 'M ' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target.y;
         });
@@ -264,14 +277,21 @@
         d.fy = d.y;
     }
     function dragged(d) {
+        d.fx = d3.event.x;
+        d.fy = d3.event.y;
+        /*
         if(d.fx < (width - width/8) && d.fx > width/8){
             d.fx = d3.event.x;
         }
         if(d.fy < (height-height/6) && d.fy > height/8){
             d.fy = d3.event.y;
         }
+        */
     }
     function dragended(d) {
+        d.fx = d3.event.x;
+        d.fy = d3.event.y;
+        /*
         if (!d3.event.active) simulation.alphaTarget(0);
         if(d.fx > (width - width/8)){
             d.fx = width - ((width/8)+2);
@@ -285,8 +305,9 @@
         if(d.fy < height/8){
             d.fy = (height/8)+2;
         }
+        */
     }
 </script>
 
 </body>
-</html>
+</html>聘卓聓剒聒啕聕婚聚扢聢汬聬屜聜℡砡
