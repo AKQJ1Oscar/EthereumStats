@@ -831,10 +831,10 @@ function generateJSON(res, accounts, type) {
       }
     }
 
-    // We will set a different color gradient depending on the graph's type (from A0 to FF, which yields 95 possible colors).
-    var colorHexRange = 95; 
+    // We will set a different color gradient depending on the graph's type
+    var colorHexRange = 115; 
     for (var i = 0; i < records.length; i++) {
-      var fillValue = (Math.floor(((records[i].result) / maxColor) * colorHexRange) + 160).toString(16);
+      var fillValue = (Math.floor(((records[i].result) / maxColor) * colorHexRange) + 140).toString(16);
       //console.log("Color for " + records[i].result + " is " + fillValue + "\n");
       // blue - betweenness
       var fillString = "#0000" + fillValue;
