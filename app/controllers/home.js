@@ -670,27 +670,6 @@ function printTransGraph(res, type, accounts) {
     } else {
       console.log("Wrong input type.");
     }
-
-    /*
-    fs.writeFile('/home/ether/EthereumTracking/TFM/R/CSVfrom.csv', accountsToCSV, 'utf8', function(err) {
-      if (err) {
-        console.log('Some error occured - file either not saved or corrupted file saved.');
-      } else {
-        console.log('CSVfrom.csv saved!');
-      }
-      //return;
-      // Type of graph to compute/print      
-      if (type == "normal") {
-        //console.log("Calling RCallNormal()");
-        RCallNormal(res, accountsVisualization);
-      } else if (type == "betweenness") {
-        RCallBetween(res, accountsVisualization);
-        //console.log("Calling RCallBetween()");
-      } else {
-        console.log("Wrong input type.");
-      }
-    });
-    */
   }
 }
 
@@ -834,9 +813,8 @@ function generateJSON(res, accounts, type) {
     columns: true,
     skip_empty_lines: true
   });
-
-
   //
+
   if (type == "normal") {
     for (var i = 0; i < records.length; i++) {
       nodes.push({
@@ -844,7 +822,7 @@ function generateJSON(res, accounts, type) {
         id: records[i][Object.keys(records[i])[0]]
       });
     }
-  } else if (type == "betweenness") {
+  } else {
     // Get fill maximum value to configure the color range
     var maxColor = 0;
     for (var i = 0; i < records.length; i++) {
@@ -853,16 +831,25 @@ function generateJSON(res, accounts, type) {
       }
     }
 
-    //var colorHexRange = Math.pow(2, 12)-1; // If the maximum is #FFF
-    var colorHexRange = 3000; // The above number yields to blank nodes if FFF
-
+    // We will set a different color gradient depending on the graph's type (from A0 to FF, which yields 95 possible colors).
+    var colorHexRange = 95; 
     for (var i = 0; i < records.length; i++) {
-      var fillValue = Math.floor(((records[i].result) / maxColor) * colorHexRange).toString(16);
-      console.log("Color for " + records[i].result + " is " + fillValue + "\n");
+      var fillValue = (Math.floor(((records[i].result) / maxColor) * colorHexRange) + 160).toString(16);
+      //console.log("Color for " + records[i].result + " is " + fillValue + "\n");
+      // blue - betweenness
+      var fillString = "#0000" + fillValue;
+      // green - closeness
+      if (type == "closeness") {
+        // blue gradient
+        fillString = "#00" + fillValue + "00";
+      } else if (type == "pageRank"){
+        // red - pageRank
+        fillString = "#" + fillValue + "0000";
+      }
       nodes.push({
         name: records[i][Object.keys(records[i])[0]].substring(0, 7),
         id: records[i][Object.keys(records[i])[0]],
-        fill: "#" + fillValue
+        fill: fillString
       });
     }
   }
@@ -884,18 +871,6 @@ function generateJSON(res, accounts, type) {
   }
   console.log("JSON created.");
 }
-
-
-/*
-  fs.writeFile('/home/ether/EthereumTracking/TFM/EthereumStats/app/views/result.json', JSON.stringify(jsonOutput), 'utf8', function(err) {
-    if (err) {
-      console.error('Some error occured - file either not saved or corrupted file saved.', err);
-    } else {
-      console.log('It\'s saved!');
-    }
-  });
-}
-*/
 
 /*
 ----- 
