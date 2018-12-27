@@ -140,7 +140,7 @@ function RCallCloseness(res, accounts) {
   var out = R("/home/ether/EthereumTracking/TFM/R/closeness.R")
     .data()
     .callSync();
-  generateJSON(res, accounts, "betweenness");
+  generateJSON(res, accounts, "closeness");
   console.log("rendering...");
   res.render('response', {
     title: TITLE
@@ -152,7 +152,7 @@ function RCallPageRank(res, accounts) {
   var out = R("/home/ether/EthereumTracking/TFM/R/pagerank.R")
     .data()
     .callSync();
-  generateJSON(res, accounts, "betweenness");
+  generateJSON(res, accounts, "pageRank");
   console.log("rendering...");
   res.render('response', {
     title: TITLE
@@ -345,7 +345,8 @@ function printTrans(pintar, res, txList, type, accounts, accToSearch) {
 
 // Get the graph for this wallet
 router.get('/wallets/walletTree', function(req, res) {
-  var nodes = 250;
+  // we add 1 because the first element of the accounts array (later on) will be the description of each field
+  var nodes = 251;
   //TODO implement level threshold
   //var levels = 3;
   var levels = "";
@@ -358,7 +359,8 @@ router.get('/wallets/walletTree', function(req, res) {
   chosenBlock = 5000000 + chosenBlock;
 
   if (req.query.nodeNum != "" && req.query.nodeNum != null && req.query.nodeNum != undefined) {
-    nodes = req.query.nodeNum;
+    // we add 1 because the first element of the accounts array (later on) will be the description of each field
+    nodes = req.query.nodeNum + 1;
   }
 
   // Regex worth it?
@@ -414,14 +416,15 @@ function getWalletTreeFromMongo(res, wallet, nodes, levels, type) {
     var accounts = new Array();
     accounts.push(["source", "target", "weight", "ether", "hash"]);
     var accList = new Set();
+    var accAlreadyProcessed = new Set();
     accList.add(wallet);
     var dbo = db.db('ethereumTracking');
-    getReceiversForWalletInMongo(accList, res, type, accounts, nodes, dbo, db);
+    getReceiversForWalletInMongo(accList, accAlreadyProcessed, res, type, accounts, nodes, dbo, db);
   });
 
 }
 
-async function getReceiversForWalletInMongo(accList, res, type, accounts, nodes, dbo, db) {
+async function getReceiversForWalletInMongo(accList, accAlreadyProcessed, res, type, accounts, nodes, dbo, db) {
   if (accList.size < 1) {
     //console.log("From is \n" + accForm);
     //console.log("To is \n" + accTo);
@@ -451,21 +454,15 @@ async function getReceiversForWalletInMongo(accList, res, type, accounts, nodes,
     while (await cursor.hasNext()) {
       if (cursorCounter < remainingSize) {
         var doc = await cursor.next();
-        //console.log("Document is " + JSON.parse(JSON.stringify(doc)).sender);
-        //console.log("Document is " + JSON.parse(JSON.stringify(doc)));
-        //console.log("Document receiver is " + doc["receiver"]);
         result.push(doc);
-        //console.log("Result is " + result.toString());
         cursorCounter++;
       } else {
         break;
       }
     }
 
-    console.log("Closing cursor after " + cursorCounter + " iterations");
+    console.log("Closing cursor after " + cursorCounter + " iterations. Result length is " + result.length + " and remaining size is " + remainingSize);
     cursor.close();
-
-    //console.log("Testing values: hash is " + result[0]["_id"]);
 
     if (result.length > 0) {
       // Receivers size for this wallet
@@ -473,8 +470,6 @@ async function getReceiversForWalletInMongo(accList, res, type, accounts, nodes,
       console.log(size + " receivers for this wallet");
       console.log("Size is " + size + " for wallet" + wallet);
       // Number of remaining nodes to add 
-      //var remainingSize = nodes - accounts.length;
-
 
       // Max nodes number reached in this iteration
       if (size >= remainingSize) {
@@ -513,17 +508,20 @@ async function getReceiversForWalletInMongo(accList, res, type, accounts, nodes,
             hash != null && hash != "" && hash != undefined) {
             //console.log("adding wallet\n");
             accounts.push([wallet, receiver, 1, amount, hash]);
-            accList.add(receiver);
+            if (accAlreadyProcessed.has(receiver) == false){
+              accList.add(receiver);  
+            }
           }
         }
         accList.delete(wallet);
-        getReceiversForWalletInMongo(accList, res, type, accounts, nodes, dbo, db);
+        accAlreadyProcessed.add(wallet);
+        getReceiversForWalletInMongo(accList, accAlreadyProcessed, res, type, accounts, nodes, dbo, db);
       }
 
     } else {
       console.log("[WARN] Wallet " + wallet + " does not have any receivers.");
       accList.delete(wallet);
-      getReceiversForWalletInMongo(accList, res, type, accounts, nodes, dbo, db);
+      getReceiversForWalletInMongo(accList, accAlreadyProcessed, res, type, accounts, nodes, dbo, db);
     }
   }
 }
@@ -826,21 +824,29 @@ function generateJSON(res, accounts, type) {
     // Get fill maximum value to configure the color range
     var maxColor = 0;
     for (var i = 0; i < records.length; i++) {
-      if (records[i].result > maxColor) {
-        maxColor = records[i].result;
+      var resultInt = parseFloat(records[i].result);
+      if (resultInt > maxColor) {
+        maxColor = resultInt;
       }
     }
 
     // We will set a different color gradient depending on the graph's type
     var colorHexRange = 115; 
     for (var i = 0; i < records.length; i++) {
-      var fillValue = (Math.floor(((records[i].result) / maxColor) * colorHexRange) + 140).toString(16);
-      //console.log("Color for " + records[i].result + " is " + fillValue + "\n");
-      // blue - betweenness
-      var fillString = "#0000" + fillValue;
-      // green - closeness
-      if (type == "closeness") {
-        // blue gradient
+      var mappedValue = 140;
+      if (maxColor == 0){
+        mappedValue = 140;
+      } else {
+        mappedValue = Math.floor(((records[i].result) / maxColor) * colorHexRange) + 140;
+      }
+      var fillValue = mappedValue.toString(16);
+      var fillString = "";
+      if (type == "betweenness"){
+        // blue - betweenness
+        fillString = "#0000" + fillValue;
+      }
+      else if (type == "closeness") {
+        // green - closeness
         fillString = "#00" + fillValue + "00";
       } else if (type == "pageRank"){
         // red - pageRank
