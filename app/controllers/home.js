@@ -334,28 +334,6 @@ function printTrans(pintar, res, txList, type, accounts, accToSearch) {
     } else {
       console.log("Wrong input type.");
     }
-
-    /*
-    if (CSVWrite) {
-      fs.writeFile('/home/ether/EthereumTracking/TFM/R/CSVfrom.csv', accountsToCSV, 'utf8', function(err) {
-        if (err) {
-          console.log('Some error occured - file either not saved or corrupted file saved.');
-        } else {
-          console.log('CSVfrom.csv saved!');
-        }
-        // Type of graph to compute
-        if (type == "normal") {
-          console.log("Calling RCallNormal()");
-          RCallNormal(res, accountsVisualization);
-        } else if (type == "betweenness") {
-          RCallBetween(res, accountsVisualization);
-          console.log("Calling RCallBetween()");
-        } else {
-          console.log("Wrong input type.");
-        }
-      });
-    }
-    */
   }
 }
 
@@ -448,7 +426,7 @@ async function getReceiversForWalletInMongo(accList, res, type, accounts, nodes,
     //console.log("From is \n" + accForm);
     //console.log("To is \n" + accTo);
     console.log("Nodes limit achieved. Printing and exiting");
-    printTransCassandra(res, type, accounts);
+    printTransGraph(res, type, accounts);
     return db.close();
   } else {
 
@@ -519,7 +497,7 @@ async function getReceiversForWalletInMongo(accList, res, type, accounts, nodes,
         }
         console.log("Nodes limit achieved. Printing and exiting");
         //console.log("Accounts is " + accounts);
-        printTransCassandra(res, type, accounts);
+        printTransGraph(res, type, accounts);
         return db.close();
       } else {
         for (var i = 0; i < size; i++) {
@@ -591,7 +569,7 @@ function getReceiversForWallet(accList, res, type, accounts, nodes, dbo) {
     //console.log("From is \n" + accForm);
     //console.log("To is \n" + accTo);
     console.log("Nodes limit achieved. Printing and exiting");
-    printTransCassandra(res, type, accounts);
+    printTransGraph(res, type, accounts);
     return;
   } else {
     var query = 'SELECT receivers FROM wallets WHERE id=?';
@@ -639,7 +617,7 @@ function getReceiversForWallet(accList, res, type, accounts, nodes, dbo) {
             }
             console.log("Nodes limit achieved. Printing and exiting");
             //console.log("Accounts is " + accounts);
-            printTransCassandra(res, type, accounts);
+            printTransGraph(res, type, accounts);
             return;
           } else {
             for (var i = 0; i < size; i++) {
@@ -665,7 +643,7 @@ function getReceiversForWallet(accList, res, type, accounts, nodes, dbo) {
 
 
 // Save accounts to CSV and call the R script.
-function printTransCassandra(res, type, accounts) {
+function printTransGraph(res, type, accounts) {
   accountsVisualization = groupPairsOfNodesForVisualization(accounts);
   accounts = groupPairsOfNodes(accounts);
   accountsToCSV = csv(accounts);
