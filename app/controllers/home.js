@@ -15,6 +15,9 @@ var n = 2000;
 var CSVWrite = true;
 // Mongo uri
 const MONGO_URI = "mongodb://127.0.0.1:27017";
+// UI title
+const TITLE = "EthereumTracking";
+
 
 
 // --- PROD
@@ -50,13 +53,13 @@ router.get('/index.html', function(req, res) {
 
 router.get('/tx', function(req, res) {
   res.render('tx', {
-    title: 'Tracether'
+    title: TITLE
   })
 })
 
 router.get('/wallets', function(req, res) {
   res.render('formIndex', {
-    title: 'Tracether'
+    title: TITLE
   })
 })
 
@@ -116,7 +119,7 @@ function RCallNormal(res, accounts) {
   generateJSON(res, accounts, "normal");
   console.log("rendering...");
   res.render('response', {
-    title: 'Tracether'
+    title: TITLE
   })
 }
 
@@ -128,7 +131,7 @@ function RCallBetween(res, accounts) {
   generateJSON(res, accounts, "betweenness");
   console.log("rendering...");
   res.render('response', {
-    title: 'Tracether'
+    title: TITLE
   })
 }
 
@@ -140,7 +143,7 @@ function RCallCloseness(res, accounts) {
   generateJSON(res, accounts, "betweenness");
   console.log("rendering...");
   res.render('response', {
-    title: 'Tracether'
+    title: TITLE
   })
 }
 
@@ -152,7 +155,7 @@ function RCallPageRank(res, accounts) {
   generateJSON(res, accounts, "betweenness");
   console.log("rendering...");
   res.render('response', {
-    title: 'Tracether'
+    title: TITLE
   })
 }
 
@@ -175,7 +178,7 @@ function getRandomTx(blockNumber, res, ui, nodes, nOfBlocksToSearch, txList, typ
         console.log('There are no transactions in this block.');
         if (ui == true) {
           res.render('index', {
-            title: 'Ethereum Tracking',
+            title: TITLE,
             notFound: "The transaction was not found, try with another one."
           });
         }
@@ -199,7 +202,7 @@ function getRandomTx(blockNumber, res, ui, nodes, nOfBlocksToSearch, txList, typ
         console.log('The block was not created.');
         if (ui == true) {
           res.render('index', {
-            title: 'Ethereum Tracking',
+            title: TITLE,
             notFound: "The transaction was not found, try with another one."
           });
         }
@@ -235,7 +238,7 @@ function getTxInfo(tx, res, nodes, nOfBlocksToSearch, txList, type) {
     } else {
       console.error("The transaction " + tx + " was not found. The error is: " + error);
       res.render('index', {
-        title: 'Ethereum Tracking',
+        title: TITLE,
         notFound: "The transaction " + tx + " was not found, try with another one."
       });
     }
@@ -363,7 +366,7 @@ function printTrans(pintar, res, txList, type, accounts, accToSearch) {
 
 
 // Get the graph for this wallet
-router.get('/wallets/getWalletTree', function(req, res) {
+router.get('/wallets/walletTree', function(req, res) {
   var nodes = 250;
   //TODO implement level threshold
   //var levels = 3;
@@ -744,7 +747,7 @@ async function renderIndex(res) {
       //TODO sanitize all data
 
       res.render('index', {
-        title: "Tracether",
+        title: TITLE,
         bNumber: block,
         miner: result.miner,
         difficulty: (result.difficulty / 1000000000000).toFixed(3).toString() + " THash" ,

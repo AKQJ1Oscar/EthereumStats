@@ -7,7 +7,7 @@ csv_graph <- read.csv("CSVfrom.csv", colClasses=c("character","character","numer
 
 g <- graph_from_data_frame(d=csv_graph, directed=FALSE)
 
-result <- page_rank(g)$vector
+result <- page_rank(g)
 
 df <- data.frame(result)
 

@@ -50,10 +50,6 @@
   box-sizing: border-box;
 }
 
-.dataTables_filter {
-  text-align: left !important;
-}
-
 html {
   font-family: sans-serif;
   line-height: 1.15;
