@@ -7,10 +7,11 @@
     <style type="text/css">
         .node { }
         .link { stroke: #999; stroke-opacity: .3; }
+                                                            
     </style>
 </head>
 <body>
-    <p id="pepe"></p>
+    <p>Note: darker nodes correspond to lower function values.</p>
     <button class="btn btn-default" onclick="linkSelector()">Links</button>
     <button class="btn btn-default" onclick="nodeSelector()">Nodes</button>
 
@@ -23,19 +24,15 @@
 <script type="text/javascript">
     
     var radius = 7;
-
-
     var linkStatus = 0;
     var nodeStatus = 0;
-    var colors = d3.scaleOrdinal(d3.schemeCategory10);
+
     var svg = d3.select("svg"),
         width = +svg.attr("width"),
         height = +svg.attr("height"),
         node,
         link;
 
-
-           
     svg.append('defs').append('marker')
         .attrs({'id':'arrowhead',
             'viewBox':'-0 -5 10 10',
@@ -51,7 +48,6 @@
         .attr('fill', '#999')
         .style('stroke','none');
     
-
     var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function (d) {return d.id;}).distance(100).strength(1))
         .force("charge", d3.forceManyBody().strength(-30))
@@ -59,7 +55,11 @@
     d3.json("result.json", function (error, graph) {
         if (error) throw error;
         update(graph.links, graph.nodes);
-    })
+        d3.json("legend.json", function (error, legend) {
+            if (error) throw error;
+            drawLegend(legend.values);
+        });
+    })    
 
     function update(links, nodes) {
         link = svg.selectAll(".link")
@@ -113,7 +113,6 @@
                     .on("drag", dragged)
                     .on("end", dragended)
             );
-
         node.append("circle")
             .attr("r", radius)
             .attr('id', function (d, i) {return 'circle' + i})
@@ -121,7 +120,6 @@
             .on("mouseover", mouseover)
             .on("mouseout", mouseout)
             .style("fill", function (d) {return d.fill});
-
         simulation
             .nodes(nodes)
             .on("tick", ticked);
@@ -129,13 +127,13 @@
             .links(links);
         alpha();
     }
+
     function alpha(){
         var contador = 0;
         d3.selectAll(".circle").each(function(d, i){
                 if(contador == 0){
                     d3.select("#circle0").remove();
-                    //d3.select(this).attr("fill", "url(http://www.e-pint.com/epint.jpg)");
-                    //contador++;
+                    contador++;
                 }
         });
         node.filter(function (o) {return o.index === 0;})
@@ -172,8 +170,6 @@
        }
     }
     function mouseover2(d){
-        //document.getElementById("demo").innerHTML = d3.select(".edgepath").size();
-        //document.getElementById("demo").innerHTML = d.index;
         if(linkStatus == 0){
             edgelabels.filter(function (o) {return o.index === d.index;})
                 .append('textPath')
@@ -255,7 +251,6 @@
             .attr("transform", function (d) {
                 return "translate(" + Math.max(radius, Math.min(width - radius, d.x)) + ", " + Math.max(radius, Math.min(height - radius, d.y)) + ")";                           
             });
-
         edgepaths.attr('d', function (d) {
             return 'M ' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target.y;
         });
@@ -284,7 +279,8 @@
         d.fx = d3.event.x;
         d.fy = d3.event.y;
     }
+
 </script>
 
 </body>
-</html>
+</html>⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ杣｛嵙｡兜ｖ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ㤴Ｘ⤣Ｈ⤣Ｈ⤣Ｈ
