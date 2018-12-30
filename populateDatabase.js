@@ -40,23 +40,20 @@ function getStartBlockNumber(lastBlockNumber) {
 
 
     dbo.collection('ControlInformation').find().sort({
-      lastBlock: -1
-    }).toArray(
-      function(err, result) {
-        //console.log(result);
-        if (err) {
-          throw err;
-        }
-        if (result[0] == undefined || result[0].lastBlock == undefined || result[0].lastBlock == null) {
-          //startBlockNumber = 0;
-	  //TODO Change it when enough space
-	  startBlockNumber = 5000000;
-        } else {
-          startBlockNumber = result[0].lastBlock;
-        }
-        db.close();
-        removePreviousUncompletedBatch(startBlockNumber, lastBlockNumber);
-      });
+      dateLogged: -1
+    }).limit(1).toArray(
+    function(err, result) {
+      if (err) {
+        throw err;
+      }
+      if (result[0] == undefined || result[0].lastBlock == undefined || result[0].lastBlock == null) {
+        startBlockNumber = 0;
+      } else {
+        startBlockNumber = result[0].lastBlock;
+      }
+      db.close();
+      removePreviousUncompletedBatch(startBlockNumber, lastBlockNumber);
+    });
   });
 }
 
@@ -82,8 +79,8 @@ function removePreviousUncompletedBatch(startBlockNumber, lastBlockNumber) {
       console.log("Deleted transactions from block " + startBlockNumber + " onwards before populating.\n");
       console.log("Starting the population with START:" + startBlockNumber + " and LAST:" + lastBlockNumber);
       db.close();
-      //iterateTransactions(startBlockNumber, lastBlockNumber);
-      iterateTransactions(startBlockNumber, 6000000);
+      iterateTransactions(startBlockNumber, lastBlockNumber);
+      //iterateTransactions(startBlockNumber, 6000000);
     });
   });
 }
@@ -133,51 +130,12 @@ function txTrackingPopulation(dbo, batchSize, start, end, iterationCounter, db) 
           var txCounter = 0;
           result.transactions.forEach(function(e) {
             var tx = {};
-            //console.log("The tx is: " + JSON.stringify(e));
+            console.log("The tx is: " + JSON.stringify(e));
             tx.hash = e.hash;
             tx.sender = e.from;
             tx.receiver = e.to;
             tx.amount = (e.value) / 1000000000000000000;
             tx.blockNumber = result.number;
-
-
-            /*
-            dbo.collection('Transaction').updateOne({
-              hash: e.hash
-            }, {
-              $set: tx
-            }, {
-              upsert: true
-            }, function(err, result) {
-              if (err != null) {
-                console.error("The error output after adding the document to the database is " + err);
-                throw err;
-              }
-              txCounter++;
-              if (blockLength == txCounter) {
-                counter++;
-              }
-              if (counter == (stop - startBlock)) {
-                iterationCounter += counter;
-                console.log("Iteration counter is " + iterationCounter);
-                if (iterationCounter == (end - start)) {
-                  console.log("Closing client.");
-                  db.close();
-                  return;
-                } else {
-                  console.log("Calling Populate Transactions again..." + "\n");
-                  dbo.collection('ControlInformation').insert({
-                    dateLogged: new Date(new Date().toISOString()),
-                    lastBlock: stop
-                  }, {
-                    upsert: true
-                  }, function(error, result) {
-                    txTrackingPopulation(dbo, batchSize, start, end, iterationCounter, db);
-                  });
-                }
-              }
-            });
-            */
 
             dbo.collection('Transaction').insert({
               _id: tx.hash,
@@ -199,16 +157,25 @@ function txTrackingPopulation(dbo, batchSize, start, end, iterationCounter, db) 
                 console.log("Iteration counter is " + iterationCounter);
                 if (iterationCounter == (end - start)) {
                   console.log("Closing client.");
-                  db.close();
-                  return;
-                } else {
-                  console.log("Calling Populate Transactions again..." + "\n");
-                  dbo.collection('ControlInformation').insert({
+                  dbo.collection('ControlInformation').insertOne({
                     dateLogged: new Date(new Date().toISOString()),
-                    lastBlock: stop
+                    lastBlock: stop+1
                   }, {
                     upsert: true
                   }, function(error, result) {
+                    console.log("Control information saved for block " + (stop+1));
+                    db.close();
+                    return;
+                  });
+                } else {
+                  console.log("Calling Populate Transactions again..." + "\n");
+                  dbo.collection('ControlInformation').insertOne({
+                    dateLogged: new Date(new Date().toISOString()),
+                    lastBlock: stop+1
+                  }, {
+                    upsert: true
+                  }, function(error, result) {
+                    console.log("Control information saved for block " + (stop+1));
                     txTrackingPopulation(dbo, batchSize, start, end, iterationCounter, db);
                   });
                 }
@@ -224,14 +191,21 @@ function txTrackingPopulation(dbo, batchSize, start, end, iterationCounter, db) 
             iterationCounter += counter;
             console.log("Iteration counter is " + iterationCounter);
             if (iterationCounter == (end - start)) {
-              console.log("Closing client.");
-              db.close();
-              return;
+              dbo.collection('ControlInformation').insertOne({
+                    dateLogged: new Date(new Date().toISOString()),
+                    lastBlock: stop+1
+                  }, {
+                    upsert: true
+                  }, function(error, result) {
+                    console.log("Control information saved for block " + (stop+1));
+                    db.close();
+                    return;
+                  });
             } else {
               console.log("Calling Populate Transactions again..." + "\n");
-              dbo.collection('ControlInformation').insert({
+              dbo.collection('ControlInformation').insertOne({
                 dateLogged: new Date(new Date().toISOString()),
-                lastBlock: stop
+                lastBlock: stop+1
               }, {
                 upsert: true
               }, function(error, result) {
@@ -396,24 +370,24 @@ function populateInBatchesForWalletsTracking(dbo, batchSize, start, end, iterati
       - blockNumber
       - sender
       - amount
-  */
-  var wallets = [];
-  var wallets_index = new Set();
-  console.log("Stop is " + stop);
+      */
+      var wallets = [];
+      var wallets_index = new Set();
+      console.log("Stop is " + stop);
 
-  for (var j = startBlock; j < stop; j++) {
-    web3.eth.getBlock(j, true, function(error, result) {
-      if (error != null) {
-        console.error("An error ocurred while getting the block. " + error);
-        throw error;
-      }
+      for (var j = startBlock; j < stop; j++) {
+        web3.eth.getBlock(j, true, function(error, result) {
+          if (error != null) {
+            console.error("An error ocurred while getting the block. " + error);
+            throw error;
+          }
 
-      console.log("Processing the block: " + result.number);
-      if (result != null) {
-        if (result.transactions.length > 0) {
-          result.transactions.forEach(function(e) {
-            currentFrom = {};
-            currentTo = {};
+          console.log("Processing the block: " + result.number);
+          if (result != null) {
+            if (result.transactions.length > 0) {
+              result.transactions.forEach(function(e) {
+                currentFrom = {};
+                currentTo = {};
 
             // for the other ones, we need to check whether that wallet is already in the the wallets array
             var indexFrom = -1;
@@ -492,14 +466,14 @@ function populateInBatchesForWalletsTracking(dbo, batchSize, start, end, iterati
             }
 
           });
-          counter++;
-          if (counter % 100 == 0) {
-            console.log("Counter is " + counter);
-          }
+              counter++;
+              if (counter % 100 == 0) {
+                console.log("Counter is " + counter);
+              }
 
-          if (counter == (stop - startBlock)) {
-            var wallets_index_array = Array.from(wallets_index);
-            var wallets_index_length = wallets_index_array.length;
+              if (counter == (stop - startBlock)) {
+                var wallets_index_array = Array.from(wallets_index);
+                var wallets_index_length = wallets_index_array.length;
             // Wallets counter on this batch
             var counter_iter = 0;
             console.log("Updating MongoDB... Wallets length is " + wallets_index_length + ". Date is " + new Date());
@@ -510,7 +484,7 @@ function populateInBatchesForWalletsTracking(dbo, batchSize, start, end, iterati
         }
       }
     });
-  }
+}
 }
 
 
@@ -724,7 +698,7 @@ function populateInBatchesForWalletsTrackingCassandra(dbo, batchSize, start, end
 
       }
     });
-  }
+}
 }
 
 
@@ -744,11 +718,11 @@ function updateWalletInCassandra(dbo, batchSize, start, end, iterationCounter, c
   console.log("Wallet is " + (wallets[i_i].id));
 
   dbo.execute(query, params, {
-      prepare: true
-    },
-    function(err, result) {
-      if (err != null) {
-        console.error("The error output after updating the document in the database is " + err);
+    prepare: true
+  },
+  function(err, result) {
+    if (err != null) {
+      console.error("The error output after updating the document in the database is " + err);
         //throw err;
       }
       console.log("Doing stuff in Cassandra... Date is " + new Date());
