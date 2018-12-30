@@ -11,7 +11,7 @@
     </style>
 </head>
 <body>
-    <p>Note: darker nodes correspond to lower function values.</p>
+    <p style="color:black;">Note: darker nodes correspond to lower function values.</p>
     <button class="btn btn-default" onclick="linkSelector()">Links</button>
     <button class="btn btn-default" onclick="nodeSelector()">Nodes</button>
 
@@ -26,6 +26,10 @@
     var radius = 7;
     var linkStatus = 0;
     var nodeStatus = 0;
+    var colors = d3.scaleOrdinal(d3.schemeCategory10);
+    var legendRectSize = 18;                                  // NEW
+        var legendSpacing = 4; 
+
 
     var svg = d3.select("svg"),
         width = +svg.attr("width"),
@@ -159,7 +163,7 @@
     function mouseover(d){
         d3.select(this).transition()
             .duration(750)
-            .attr("r", "15");
+            .attr("r", 2*radius);
         if(nodeStatus == 0){
             node.filter(function (o) {return o.index === d.index;})
                .append("text")
@@ -195,7 +199,7 @@
     function mouseout(){
         d3.select(this).transition()
            .duration(750)
-           .attr("r", "10");
+           .attr("r", radius);
         if(nodeStatus == 0){
             d3.selectAll(".nodetext").remove();
         }
@@ -283,4 +287,4 @@
 </script>
 
 </body>
-</html>⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ杣｛嵙｡兜ｖ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ⤣Ｈ㤴Ｘ⤣Ｈ⤣Ｈ⤣Ｈ
+</html>
