@@ -159,6 +159,7 @@
                .attr("dx", 14)
                .text(function (d) {return d.id;});
        }
+       d3.select(".nodeInfo").text(d['id']);
     }
     function mouseover(d){
         d3.select(this).transition()
