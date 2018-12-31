@@ -12,6 +12,10 @@
 </head>
 <body>
     <p style="color:black;">Note: darker nodes correspond to lower function values.</p>
+    <div class="infobox">
+        <h4>Wallet: <div class="node"></div></h4>
+        <h4>Link info: <div class="linkInfo"></div></h4>
+</div>
     <button class="btn btn-default" onclick="linkSelector()">Links</button>
     <button class="btn btn-default" onclick="nodeSelector()">Nodes</button>
 
@@ -141,8 +145,8 @@
              .append("rect")
              .attr("x", -10)
              .attr("y", -10)
-             .attr("width", radius*1.2)
-             .attr("height", radius*1.2)
+             .attr("width", radius*2)
+             .attr("height", radius*2)
              .on("mouseover", mouseoverInit)
              .on("mouseout", mouseoutInit)
              .style("fill", function (d) {return d.fill});
@@ -169,6 +173,7 @@
                .attr("dx", 14)
                .text(function (d) {return d.id;});
        }
+       d3.select(".infobox .node").text(d['id']);
     }
     function mouseover2(d){
         if(linkStatus == 0){
@@ -187,6 +192,7 @@
                     return trans;
                 });
         }
+        d3.select(".infobox .linkInfo").text(d['tx']);
     }
     function mouseoutInit(){
         if(nodeStatus == 0){
