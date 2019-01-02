@@ -157,7 +157,8 @@ function RCallNormal(res, accounts, uuid) {
   }
   console.log("rendering...");
   res.render('response', {
-    title: TITLE
+    title: TITLE,
+    uuid: uuid
   }, removeJSON(uuid))
 }
 

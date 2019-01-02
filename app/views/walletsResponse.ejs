@@ -25,7 +25,8 @@
 
 
 <script type="text/javascript">
-    
+    var uuid = <%= uuid %>;
+    uuid = uuid.toString();
     var radius = 7;
     var linkStatus = 0;
     var nodeStatus = 0;
@@ -57,7 +58,7 @@
         .force("charge", d3.forceManyBody().strength(-30))
         .force("center", d3.forceCenter(width / 2, height / 2));
     
-    d3.json("result.json", function (error, graph) {
+    d3.json(uuid, function (error, graph) {
         if (error) throw error;
         update(graph.links, graph.nodes);
     })    
