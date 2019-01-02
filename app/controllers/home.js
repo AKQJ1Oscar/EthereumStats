@@ -144,7 +144,7 @@ router.get('/wallets/walletTree', function(req, res) {
 */
 
 // Called when req.query.type is normal
-function RCallNormal(res, accounts, uuid) {
+function RCallNormal(res, accounts) {
   console.log("Function RCallNormal called.");
   var out = R("/home/ether/EthereumTracking/TFM/R/betweenness.R")
     .data()
@@ -158,12 +158,12 @@ function RCallNormal(res, accounts, uuid) {
   console.log("rendering...");
   res.render('response', {
     title: TITLE,
-    uuid: uuid
+    uuid: uuid.toString()
   }, removeJSON(uuid))
 }
 
 // Called when req.query.type is etweenness
-function RCallBetween(res, accounts, uuid) {
+function RCallBetween(res, accounts) {
   console.log("Function RCallBetween called.");
   var out = R("/home/ether/EthereumTracking/TFM/R/betweenness.R")
     .data()
@@ -176,12 +176,13 @@ function RCallBetween(res, accounts, uuid) {
   }
   console.log("rendering...");
   res.render('response', {
-    title: TITLE
+    title: TITLE,
+    uuid: uuid.toString()
   }, removeJSON(uuid))
 }
 
 // Called when req.query.type is closeness
-function RCallCloseness(res, accounts, uuid) {
+function RCallCloseness(res, accounts) {
   console.log("Function RCallCloseness called.");
   var out = R("/home/ether/EthereumTracking/TFM/R/closeness.R")
     .data()
@@ -194,12 +195,13 @@ function RCallCloseness(res, accounts, uuid) {
   }
   console.log("rendering...");
   res.render('response', {
-    title: TITLE
+    title: TITLE,
+    uuid: uuid.toString()
   }, removeJSON(uuid))
 }
 
 // Called when req.query.type is pageRank
-function RCallPageRank(res, accounts, uuid) {
+function RCallPageRank(res, accounts) {
   console.log("Function RCallPageRank called.");
   var out = R("/home/ether/EthereumTracking/TFM/R/pagerank.R")
     .data()
@@ -212,7 +214,8 @@ function RCallPageRank(res, accounts, uuid) {
   }
   console.log("rendering...");
   res.render('response', {
-    title: TITLE
+    title: TITLE,
+    uuid: uuid.toString()
   }, removeJSON(uuid))
 }
 
@@ -633,6 +636,7 @@ function generateJSON(res, accounts, type) {
   console.log("Function generateJSON called.");
   // Generate a uuid to name the json file where the result will be stored. This prevents from different users overwritting each other's JSON.
   var uuid = uuidv1().toString() + ".json";
+  uuid = "a"+uuid;
   console.log("Uuid is " + uuid);
   // Generating the links part
   var links = new Array();
