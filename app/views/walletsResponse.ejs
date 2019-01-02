@@ -25,9 +25,6 @@
 
 
 <script type="text/javascript">
-    var uuid = <%= uuid %>;
-    uuid = uuid.toString();
-    var first = null;
     var radius = 7;
     var linkStatus = 0;
     var nodeStatus = 0;
@@ -59,7 +56,7 @@
         .force("charge", d3.forceManyBody().strength(-30))
         .force("center", d3.forceCenter(width / 2, height / 2));
     
-    d3.json(uuid, function (error, graph) {
+    d3.json(<%- uuid %>, function (error, graph) {
         if (error) throw error;
         update(graph.links, graph.nodes);
     })    
@@ -139,12 +136,7 @@
                     contador++;
                 }
         });
-        node.filter(function (o) {
-            if (o.index === 0) {
-                first = o;
-            }
-            return o.index === 0;}
-            )
+        node.filter(function (o) {return o.index === 0;})
              .append("rect")
              .attr("x", -10)
              .attr("y", -10)

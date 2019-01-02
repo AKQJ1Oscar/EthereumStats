@@ -158,7 +158,7 @@ function RCallNormal(res, accounts) {
   console.log("rendering...");
   res.render('response', {
     title: TITLE,
-    uuid: uuid.toString()
+    uuid: "'"+uuid.toString()+"'"
   }, removeJSON(uuid))
 }
 
@@ -177,7 +177,7 @@ function RCallBetween(res, accounts) {
   console.log("rendering...");
   res.render('response', {
     title: TITLE,
-    uuid: uuid.toString()
+    uuid: "'"+uuid.toString()+"'"
   }, removeJSON(uuid))
 }
 
@@ -196,7 +196,7 @@ function RCallCloseness(res, accounts) {
   console.log("rendering...");
   res.render('response', {
     title: TITLE,
-    uuid: uuid.toString()
+    uuid: "'"+uuid.toString()+"'"
   }, removeJSON(uuid))
 }
 
@@ -215,7 +215,7 @@ function RCallPageRank(res, accounts) {
   console.log("rendering...");
   res.render('response', {
     title: TITLE,
-    uuid: uuid.toString()
+    uuid: "'"+uuid.toString()+"'"
   }, removeJSON(uuid))
 }
 
@@ -739,11 +739,14 @@ function generateJSON(res, accounts, type) {
   console.log("JSON created.");
 }
 
+// After a few seconds (we give the view some time to render), remove the file
 function removeJSON(uuid) {
-  fs.unlink('/home/ether/EthereumTracking/TFM/EthereumStats/public/wallets/' + uuid, (err) => {
-  if (err) throw err;
-    console.log(uuid + ' was deleted');
-  });
+  setTimeout(function(){
+    fs.unlink('/home/ether/EthereumTracking/TFM/EthereumStats/public/wallets/' + uuid, (err) => {
+    if (err) throw err;
+      console.log(uuid + ' was deleted');
+    });
+  }, 7 * 1000);
 }
 
 
