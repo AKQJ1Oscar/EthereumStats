@@ -99,7 +99,7 @@ router.get('/getTxTree', function(req, res) {
     tx = getRandomTx(chosenBlock, res, true, nodes, nOfBlocksToSearch, txList, type);
   } else {
     txList.push(tx);
-    console.log("The nodeNumber is: " + nodes + ".\n The nOfBlocksToSearch is: " + nOfBlocksToSearch + ".\n The TX to search is (custom): " + tx + ".\n");
+    //console.log("The nodeNumber is: " + nodes + ".\n The nOfBlocksToSearch is: " + nOfBlocksToSearch + ".\n The TX to search is (custom): " + tx + ".\n");
     getTxInfo(tx, res, nodes, nOfBlocksToSearch, txList, type);
   }
 });
@@ -296,7 +296,7 @@ async function getReceiversForWalletInMongo(accList, accAlreadyProcessed, res, t
     var remainingSize = nodes - accounts.length;
 
     var cursor = dbo.collection('Transaction').find(query);
-    console.log("Got cursor");
+    //console.log("Got cursor");
 
     var result = new Array();
 
@@ -312,21 +312,21 @@ async function getReceiversForWalletInMongo(accList, accAlreadyProcessed, res, t
       }
     }
 
-    console.log("Closing cursor after " + cursorCounter + " iterations. Result length is " + result.length + " and remaining size is " + remainingSize);
+    //console.log("Closing cursor after " + cursorCounter + " iterations. Result length is " + result.length + " and remaining size is " + remainingSize);
     cursor.close();
 
     if (result.length > 0) {
       // Receivers size for this wallet
       var size = result.length;
-      console.log(size + " receivers for this wallet");
-      console.log("Size is " + size + " for wallet" + wallet);
+      //console.log(size + " receivers for this wallet");
+      //console.log("Size is " + size + " for wallet" + wallet);
       // Number of remaining nodes to add 
 
       // Max nodes number reached in this iteration
       if (size >= remainingSize) {
         size = remainingSize;
-        console.log("Size and remaining size are equal " + size + " " + remainingSize);
-        console.log("Size after updating to the remaining size is : " + size);
+        //console.log("Size and remaining size are equal " + size + " " + remainingSize);
+        //console.log("Size after updating to the remaining size is : " + size);
         for (var i = 0; i < size; i++) {
           //console.log(result.rows[0].receivers[i]);
           var receiver = result[i]["receiver"];
@@ -348,8 +348,8 @@ async function getReceiversForWalletInMongo(accList, accAlreadyProcessed, res, t
       } else {
         for (var i = 0; i < size; i++) {
           var item = result[i];
-          console.log("Item is " + JSON.stringify(item));
-          console.log("Receiver is " + item["receiver"]);
+          //console.log("Item is " + JSON.stringify(item));
+          //console.log("Receiver is " + item["receiver"]);
           var receiver = result[i]["receiver"];
           var amount = result[i]["amount"];
           var hash = result[i]["_id"];
@@ -632,7 +632,7 @@ function groupPairsOfNodesForVisualization(accounts) {
 function generateJSON(res, accounts, type) {
   console.log("Function generateJSON called.");
   // Generate a uuid to name the json file where the result will be stored. This prevents from different users overwritting each other's JSON.
-  var uuid = uuidv1().toSting() + ".json";
+  var uuid = uuidv1().toString() + ".json";
   console.log("Uuid is " + uuid);
   // Generating the links part
   var links = new Array();
