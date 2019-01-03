@@ -774,15 +774,15 @@ function getStatistics(res) {
       } 
       senders = result[0];
       receivers = result[1];
-      txSenders = JSON.stringify(senders.tx);
-      txReceivers = JSON.stringify(receivers.tx);
-      etherSenders = JSON.stringify(senders["ether"]);
-      etherReceivers = JSON.stringify(receivers["ether"]);
+      txSenders = senders.tx;
+      txReceivers = receivers.tx;
+      etherSenders = senders["ether"];
+      etherReceivers = receivers["ether"];
       console.log("txSenders: " + txSenders);
       console.log("txReceivers: " + txReceivers);
       console.log("etherSenders: " + etherSenders);
       console.log("etherReceivers: " + etherReceivers);
-      res.render('statistics', {title: TITLE, txSenders: txSenders, txReceivers: txReceivers, etherSenders: etherSenders, etherReceivers: etherReceivers}, dbo.close());
+      res.render('statistics', {title: TITLE, txSenders: txSenders, txReceivers: txReceivers, etherSenders: etherSenders, etherReceivers: etherReceivers});
       });
   });
 }
