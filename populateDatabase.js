@@ -219,6 +219,84 @@ function txTrackingPopulation(dbo, batchSize, start, end, iterationCounter, db) 
   }
 }
 
+// Compute statistics
+module.exports.updateStatistics = function() {
+  computeStatistics();
+}
+
+//TODO
+function computeStatistics(){
+  MongoClient.connect(MONGO_URI, function(err, db) {
+    console.log("Client opened.");
+    if (err) {
+      console.error("An error ocurred while connecting to the DDBB." + err);
+      throw err;
+    }
+
+    var dbo = db.db("ethereumTracking");
+    var sort = {"total": -1};
+    var project = {"total" : 1};
+
+    var txSenders = new Array();
+    var txReceivers = new Array();
+    var etherSenders = new Array();
+    var etherReceivers = new Array();
+
+    dbo.collection("Transaction").aggregate([
+      {$group: { _id:"$sender", total: {$sum:1} } },
+      {$sort : sort},
+      {$limit : 3},
+      {$project: project}
+      ]).toArray(function(err, result) {
+        if (err){
+          throw err;
+        } 
+        console.log("Result txSenders is " + result);
+        txSenders = result;
+
+        dbo.collection("Transaction").aggregate([
+          {$group: { _id:"$receiver", total: {$sum:1} } },
+          {$sort : sort},
+          {$limit : 3},
+          {$project: project}
+          ]).toArray(function(err, result) {
+            if (err){
+              throw err;
+            } 
+            console.log("Result txReceivers is " + result);
+            txReceivers = result;
+
+            dbo.collection("Transaction").aggregate([
+              {$group: { _id:"$sender", total: {$sum:"$amount"} } },
+              {$sort : sort},
+              {$limit : 3},
+              {$project: project}
+              ]).toArray(function(err, result) {
+                if (err){
+                  throw err;
+                } 
+                console.log("Result etherSenders is " + result);
+                etherSenders = result;
+
+
+                dbo.collection("Transaction").aggregate([
+                  {$group: { _id:"$receiver", total: {$sum:"$amount"} } },
+                  {$sort : sort},
+                  {$limit : 3},
+                  {$project: project}
+                  ]).toArray(function(err, result) {
+                    if (err){
+                      throw err;
+                    } 
+                    console.log("Result etherReceivers is " + result);
+                    etherReceivers = result;
+                    db.close();
+                  });
+                });
+            });
+        });
+    });
+}
 
 
 // ------------------ Populate Mongo With Blocks: {number, transactions (hash, sender, receiver, amount), miner}
