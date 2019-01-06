@@ -24,9 +24,9 @@ exports.getWalletTreeFromMongo = function (res, wallet, nodes, levels, type, cal
 }
 
 exports.getTransactionsFromWallet = async function (remainingSize, dbo, query) {
-
-    var cursor = dbo.collection('Transaction').find(query);
-    //console.log("Got cursor");
+    console.log("Function getTransactionsFromWallet called.");
+    var cursor = await dbo.collection('Transaction').find(query);
+    console.log("Got cursor");
 
     var result = new Array();
 
@@ -47,3 +47,28 @@ exports.getTransactionsFromWallet = async function (remainingSize, dbo, query) {
     return result;
 }
 
+exports.getStatisticsData = function (res, callback) {
+    MongoClient.connect(MONGO_URI, function(err, db) {
+    console.log("Client opened.");
+    if (err) {
+      console.error("An error ocurred while connecting to the DDBB." + err);
+      throw err;
+    }
+
+    var dbo = db.db("ethereumTracking");
+    var sort = {"total": -1};
+    var project = {"total" : 1};
+
+    var txSenders = null;
+    var txReceivers = new Array();
+    var etherSenders = new Array();
+    var etherReceivers = new Array();
+
+    dbo.collection("Statistics").find({}).toArray(function(err, result) {
+      if (err){
+        throw err;
+      } 
+      callback(res, result);
+      });
+  });
+}

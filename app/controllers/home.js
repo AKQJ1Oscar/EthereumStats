@@ -4,18 +4,19 @@ var csv = require("array-to-csv");
 var fs = require('fs');
 var net = require('net');
 var exec = require('child_process').exec;
-var MongoClient = require('mongodb').MongoClient;
+//var MongoClient = require('mongodb').MongoClient;
 var hash = require('string-hash'); // number between 0 and 4294967295, inclusive
 var cassandra = require('cassandra-driver');
 const parse = require('csv-parse/lib/sync');
 const uuidv1 = require('uuid/v1');
+var model = require('../models/model.js');
 
 // Batch size
 var n = 2000;
 // Whether to write to CSV
 var CSVWrite = true;
 // Mongo uri
-const MONGO_URI = "mongodb://127.0.0.1:27017";
+//const MONGO_URI = "mongodb://127.0.0.1:27017";
 // UI title
 const TITLE = "EthereumTracking";
 
@@ -250,35 +251,11 @@ function getRandomWallet(chosenBlock, res, nodes, levels, type) {
         var wallet = result.transactions[chosenTx].from;
         console.log("First wallet is " + wallet);
         //getWalletTreeFromCassandra(res, wallet, nodes, levels, type);
-        getWalletTreeFromMongo(res, wallet, nodes, levels, type);
+        model.getWalletTreeFromMongo(res, wallet, nodes, levels, type, getReceiversForWalletInMongo);
       }
     }
   });
 };
-
-
-function getWalletTreeFromMongo(res, wallet, nodes, levels, type) {
-  console.log("Function getWalletTreeFromMongo called.");
-
-  //var nodes = 300;
-  //var wallet = "0xF5bEC430576fF1b82e44DDB5a1C93F6F9d0884f3";
-  MongoClient.connect(MONGO_URI, function(err, db) {
-    console.log("Client opened.");
-    if (err) {
-      console.error("An error ocurred while connecting to the DDBB." + err);
-      throw err;
-    }
-
-    var accounts = new Array();
-    accounts.push(["source", "target", "weight", "ether", "hash"]);
-    var accList = new Set();
-    var accAlreadyProcessed = new Set();
-    accList.add(wallet);
-    var dbo = db.db('ethereumTracking');
-    getReceiversForWalletInMongo(accList, accAlreadyProcessed, res, type, accounts, nodes, dbo, db);
-  });
-
-}
 
 async function getReceiversForWalletInMongo(accList, accAlreadyProcessed, res, type, accounts, nodes, dbo, db) {
   console.log("Function getReceiversForWalletInMongo called.");
@@ -287,7 +264,7 @@ async function getReceiversForWalletInMongo(accList, accAlreadyProcessed, res, t
     //console.log("To is \n" + accTo);
     console.log("Nodes limit achieved. Printing and exiting");
     printTransGraph(res, type, accounts);
-    return db.close();
+    return;
   } else {
 
     // Get the next one
@@ -297,29 +274,11 @@ async function getReceiversForWalletInMongo(accList, accAlreadyProcessed, res, t
     };
     console.log("Next wallet from set is " + wallet + ".\n");
 
-
+    
     // Get the remainin size. We will stop iterating through the cursor if this number is reached
     var remainingSize = nodes - accounts.length;
 
-    var cursor = dbo.collection('Transaction').find(query);
-    //console.log("Got cursor");
-
-    var result = new Array();
-
-    var cursorCounter = 0;
-
-    while (await cursor.hasNext()) {
-      if (cursorCounter < remainingSize) {
-        var doc = await cursor.next();
-        result.push(doc);
-        cursorCounter++;
-      } else {
-        break;
-      }
-    }
-
-    //console.log("Closing cursor after " + cursorCounter + " iterations. Result length is " + result.length + " and remaining size is " + remainingSize);
-    cursor.close();
+    var result = await model.getTransactionsFromWallet(remainingSize, dbo, query);
 
     if (result.length > 0) {
       // Receivers size for this wallet
@@ -381,150 +340,6 @@ async function getReceiversForWalletInMongo(accList, accAlreadyProcessed, res, t
     getReceiversForWalletInMongo(accList, accAlreadyProcessed, res, type, accounts, nodes, dbo, db);
   }
 }
-}
-
-
-
-
-// --- CASSANDRA START  ---
-
-
-
-function getWalletTreeFromCassandra(res, wallet, nodes, levels, type) {
-  //var nodes = 300;
-  //var wallet = "0xF5bEC430576fF1b82e44DDB5a1C93F6F9d0884f3";
-  var dbo = new cassandra.Client({
-    contactPoints: ['127.0.0.1:9042'],
-    keyspace: 'ethereumtracking'
-  });
-  //type = "normal"
-  // First level
-  var query = 'SELECT receivers FROM wallets WHERE id=?';
-  var params = {
-    id: wallet
-  };
-
-  var accounts = new Array();
-  accounts.push(["source", "target", "weight", "ether", "hash"]);
-  var accList = new Set();
-  dbo.connect(function(err) {
-    if (err) {
-      console.error("An error ocurred while connecting to the DDBB." + err);
-      return;
-    }
-    accList.add(wallet);
-    getReceiversForWalletInCassandra(accList, res, type, accounts, nodes, dbo);
-  });
-}
-
-
-
-function getReceiversForWalletInCassandra(accList, res, type, accounts, nodes, dbo) {
-  if (accList.size < 1) {
-    //console.log("From is \n" + accForm);
-    //console.log("To is \n" + accTo);
-    console.log("Nodes limit achieved. Printing and exiting");
-    printTransGraph(res, type, accounts);
-    return;
-  } else {
-    var query = 'SELECT receivers FROM wallets WHERE id=?';
-    // Get the next one
-    var wallet = accList.values().next().value;
-    //console.log("Next wallet from set is " + wallet + ".\n");
-    var params = {
-      id: wallet
-    };
-    dbo.execute(query, params, {
-      prepare: true
-    },
-    function(err, result) {
-      if (err != null) {
-        console.log("There was an error querying the DDBB.");
-      }
-      if (result == null || result == undefined || result.rows[0] == null ||
-        result.rows[0] == undefined || result.rows[0].receivers == null ||
-        result.rows[0].receivers == undefined) {
-        accList.delete(wallet);
-      getReceiversForWalletInCassandra(accList, res, type, accounts, nodes, dbo);
-    } else {
-          // Receivers size for this wallet
-          var size = result.rows[0].receivers.length;
-          console.log(size + " receivers for this wallet");
-          //console.log("Size is " + size);
-          // Number of remaining nodes to add 
-          var remainingSize = nodes - accounts.length;
-          // Max nodes number reached in this iteration
-          if (size >= remainingSize) {
-            size = remainingSize;
-            for (var i = 0; i < size; i++) {
-              //console.log(result.rows[0].receivers[i]);
-              var receiver = result.rows[0].receivers[i].wallet;
-              var amount = result.rows[0].receivers[i].amount;
-              var hash = result.rows[0].receivers[i].txhash;
-              //console.log("RECEIVER is " + receiver + " AMOUNT is " + amount + " HASH is " + hash);
-              if (wallet != null && wallet != "" && wallet != undefined &&
-                receiver != null && receiver != "" && receiver != undefined &&
-                hash != null && hash != "" && hash != undefined) {
-                //console.log("adding wallet\n");
-              accounts.push([wallet, receiver, 1, amount, hash]);
-            }
-
-          }
-          console.log("Nodes limit achieved. Printing and exiting");
-            //console.log("Accounts is " + accounts);
-            printTransGraph(res, type, accounts);
-            return;
-          } else {
-            for (var i = 0; i < size; i++) {
-              var receiver = result.rows[0].receivers[i].wallet;
-              var amount = result.rows[0].receivers[i].amount;
-              var hash = result.rows[0].receivers[i].txhash;
-              //console.log("RECEIVER is " + receiver + " AMOUNT is " + amount + " HASH is " + hash);
-              if (wallet != null && wallet != "" && wallet != undefined &&
-                receiver != null && receiver != "" && receiver != undefined &&
-                hash != null && hash != "" && hash != undefined) {
-                accounts.push([wallet, receiver, 1, amount, hash]);
-              accList.add(receiver);
-            }
-
-          }
-          accList.delete(wallet);
-          getReceiversForWalletInCassandra(accList, res, type, accounts, nodes, dbo);
-        }
-      }
-    });
-  }
-}
-
-
-// Save accounts to CSV and call the R script.
-function printTransGraph(res, type, accounts) {
-  console.log("Function printTransGraph called.");
-  accountsVisualization = groupPairsOfNodesForVisualization(accounts);
-  accounts = groupPairsOfNodes(accounts);
-  accountsToCSV = csv(accounts);
-  if (CSVWrite) {
-    try {
-      fs.writeFileSync('/home/ether/EthereumTracking/TFM/R/CSVfrom.csv', accountsToCSV, 'utf8');
-    } catch (error) {
-      console.log("Error while writing CSVfrom.csv file.");
-      //TODO RENDER ERROR CODE
-      return;
-    }
-    if (type == "normal") {
-      //console.log("Calling RCallNormal()");
-      RCallNormal(res, accountsVisualization);
-    } else if (type == "betweenness") {
-      RCallBetween(res, accountsVisualization);
-      //console.log("Calling RCallBetween()");
-    } else if (type == "closeness") {
-      RCallCloseness(res, accountsVisualization);
-    } else if (type == "pageRank") {
-      RCallPageRank(res, accountsVisualization);
-    } else {
-      console.log("Wrong input type.");
-    }
-  }
 }
 
 
@@ -752,26 +567,10 @@ function removeJSON(uuid) {
 
 
 function getStatistics(res) {
-  MongoClient.connect(MONGO_URI, function(err, db) {
-    console.log("Client opened.");
-    if (err) {
-      console.error("An error ocurred while connecting to the DDBB." + err);
-      throw err;
-    }
+  model.getStatisticsData(res, printStats);
+}
 
-    var dbo = db.db("ethereumTracking");
-    var sort = {"total": -1};
-    var project = {"total" : 1};
-
-    var txSenders = null;
-    var txReceivers = new Array();
-    var etherSenders = new Array();
-    var etherReceivers = new Array();
-
-    dbo.collection("Statistics").find({}).toArray(function(err, result) {
-      if (err){
-        throw err;
-      } 
+function printStats(res, result) {
       senders = result[0];
       receivers = result[1];
       txSenders = senders.tx;
@@ -783,8 +582,146 @@ function getStatistics(res) {
       console.log("etherSenders: " + etherSenders);
       console.log("etherReceivers: " + etherReceivers);
       res.render('statistics', {title: TITLE, txSenders: txSenders, txReceivers: txReceivers, etherSenders: etherSenders, etherReceivers: etherReceivers});
-      });
+}
+
+// Save accounts to CSV and call the R script.
+function printTransGraph(res, type, accounts) {
+  console.log("Function printTransGraph called.");
+  accountsVisualization = groupPairsOfNodesForVisualization(accounts);
+  accounts = groupPairsOfNodes(accounts);
+  accountsToCSV = csv(accounts);
+  if (CSVWrite) {
+    try {
+      fs.writeFileSync('/home/ether/EthereumTracking/TFM/R/CSVfrom.csv', accountsToCSV, 'utf8');
+    } catch (error) {
+      console.log("Error while writing CSVfrom.csv file.");
+      //TODO RENDER ERROR CODE
+      return;
+    }
+    if (type == "normal") {
+      //console.log("Calling RCallNormal()");
+      RCallNormal(res, accountsVisualization);
+    } else if (type == "betweenness") {
+      RCallBetween(res, accountsVisualization);
+      //console.log("Calling RCallBetween()");
+    } else if (type == "closeness") {
+      RCallCloseness(res, accountsVisualization);
+    } else if (type == "pageRank") {
+      RCallPageRank(res, accountsVisualization);
+    } else {
+      console.log("Wrong input type.");
+    }
+  }
+}
+
+
+// --- CASSANDRA START  ---
+
+
+function getWalletTreeFromCassandra(res, wallet, nodes, levels, type) {
+  //var nodes = 300;
+  //var wallet = "0xF5bEC430576fF1b82e44DDB5a1C93F6F9d0884f3";
+  var dbo = new cassandra.Client({
+    contactPoints: ['127.0.0.1:9042'],
+    keyspace: 'ethereumtracking'
   });
+  //type = "normal"
+  // First level
+  var query = 'SELECT receivers FROM wallets WHERE id=?';
+  var params = {
+    id: wallet
+  };
+
+  var accounts = new Array();
+  accounts.push(["source", "target", "weight", "ether", "hash"]);
+  var accList = new Set();
+  dbo.connect(function(err) {
+    if (err) {
+      console.error("An error ocurred while connecting to the DDBB." + err);
+      return;
+    }
+    accList.add(wallet);
+    getReceiversForWalletInCassandra(accList, res, type, accounts, nodes, dbo);
+  });
+}
+
+
+
+function getReceiversForWalletInCassandra(accList, res, type, accounts, nodes, dbo) {
+  if (accList.size < 1) {
+    //console.log("From is \n" + accForm);
+    //console.log("To is \n" + accTo);
+    console.log("Nodes limit achieved. Printing and exiting");
+    printTransGraph(res, type, accounts);
+    return;
+  } else {
+    var query = 'SELECT receivers FROM wallets WHERE id=?';
+    // Get the next one
+    var wallet = accList.values().next().value;
+    //console.log("Next wallet from set is " + wallet + ".\n");
+    var params = {
+      id: wallet
+    };
+    dbo.execute(query, params, {
+      prepare: true
+    },
+    function(err, result) {
+      if (err != null) {
+        console.log("There was an error querying the DDBB.");
+      }
+      if (result == null || result == undefined || result.rows[0] == null ||
+        result.rows[0] == undefined || result.rows[0].receivers == null ||
+        result.rows[0].receivers == undefined) {
+        accList.delete(wallet);
+      getReceiversForWalletInCassandra(accList, res, type, accounts, nodes, dbo);
+    } else {
+          // Receivers size for this wallet
+          var size = result.rows[0].receivers.length;
+          console.log(size + " receivers for this wallet");
+          //console.log("Size is " + size);
+          // Number of remaining nodes to add 
+          var remainingSize = nodes - accounts.length;
+          // Max nodes number reached in this iteration
+          if (size >= remainingSize) {
+            size = remainingSize;
+            for (var i = 0; i < size; i++) {
+              //console.log(result.rows[0].receivers[i]);
+              var receiver = result.rows[0].receivers[i].wallet;
+              var amount = result.rows[0].receivers[i].amount;
+              var hash = result.rows[0].receivers[i].txhash;
+              //console.log("RECEIVER is " + receiver + " AMOUNT is " + amount + " HASH is " + hash);
+              if (wallet != null && wallet != "" && wallet != undefined &&
+                receiver != null && receiver != "" && receiver != undefined &&
+                hash != null && hash != "" && hash != undefined) {
+                //console.log("adding wallet\n");
+              accounts.push([wallet, receiver, 1, amount, hash]);
+            }
+
+          }
+          console.log("Nodes limit achieved. Printing and exiting");
+            //console.log("Accounts is " + accounts);
+            printTransGraph(res, type, accounts);
+            return;
+          } else {
+            for (var i = 0; i < size; i++) {
+              var receiver = result.rows[0].receivers[i].wallet;
+              var amount = result.rows[0].receivers[i].amount;
+              var hash = result.rows[0].receivers[i].txhash;
+              //console.log("RECEIVER is " + receiver + " AMOUNT is " + amount + " HASH is " + hash);
+              if (wallet != null && wallet != "" && wallet != undefined &&
+                receiver != null && receiver != "" && receiver != undefined &&
+                hash != null && hash != "" && hash != undefined) {
+                accounts.push([wallet, receiver, 1, amount, hash]);
+              accList.add(receiver);
+            }
+
+          }
+          accList.delete(wallet);
+          getReceiversForWalletInCassandra(accList, res, type, accounts, nodes, dbo);
+        }
+      }
+    });
+  }
 }
 
 
