@@ -126,7 +126,7 @@ router.get('/wallets/walletTree', function(req, res) {
 
   if (req.query.nodeNum != "" && req.query.nodeNum != null && req.query.nodeNum != undefined) {
     // we add 1 because the first element of the accounts array (later on) will be the description of each field
-    nodes = req.query.nodeNum + 1;
+    nodes = parseInt(req.query.nodeNum) + 1;
   }
 
   // Regex worth it?
