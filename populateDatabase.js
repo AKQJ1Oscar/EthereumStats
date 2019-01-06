@@ -219,6 +219,7 @@ function txTrackingPopulation(dbo, batchSize, start, end, iterationCounter, db) 
   }
 }
 
+/*
 // Compute statistics
 module.exports.updateStatistics = function() {
   computeStatistics();
@@ -297,7 +298,7 @@ function computeStatistics(){
         });
     });
 }
-
+*/
 
 // ------------------ Populate Mongo With Blocks: {number, transactions (hash, sender, receiver, amount), miner}
 
