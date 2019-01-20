@@ -137,7 +137,7 @@ router.get('/wallets/walletTree', function(req, res) {
     getRandomWallet(chosenBlock, res, nodes, levels, type);
   } else {
     //getWalletTreeFromCassandra(res, wallet, nodes, levels, type);
-    getWalletTreeFromMongo(res, wallet, nodes, levels, type);
+    model.getWalletTreeFromMongo(res, wallet, nodes, levels, type, getReceiversForWalletInMongo);
   }
 });
 
