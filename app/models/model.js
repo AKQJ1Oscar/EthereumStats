@@ -1,6 +1,8 @@
 var MongoClient = require('mongodb').MongoClient;
 // Mongo uri
-const MONGO_URI = "mongodb://127.0.0.1:27017";
+const MONGO_URI = "mongodb://127.0.0.1:27016";
+//encodeURIComponente('[¿z^V)-1R\ñ¡ML|H');
+//const MONGO_URI = "mongodb://ether-arkham-trace:jxzCYvqzQz7cb3x@127.0.0.1:27017";
 
 exports.getWalletTreeFromMongo = function (res, wallet, nodes, levels, type, callback) {
   console.log("Function getWalletTreeFromMongo called.");
