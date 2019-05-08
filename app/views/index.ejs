@@ -1,11 +1,4 @@
 <!DOCTYPE html>
-<!--
-* CoreUI - Free Bootstrap Admin Template
-* @version v2.1.10
-* @link https://coreui.io
-* Copyright (c) 2018 creativeLabs Łukasz Holeczek
-* Licensed under MIT (https://coreui.io/license)
--->
 
 <html lang="en">
 <head>
@@ -16,11 +9,12 @@
   <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
   <meta name="author" content="Łukasz Holeczek">
   <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
-  <title>Tracether</title>
+  <title><%= title %></title>
   <!-- Main styles for this application-->
-  <link href="css/style.css" rel="stylesheet">
   <link href="css/styleCoreUI.css" rel="stylesheet">
   <link href="vendors/pace-progress/css/pace.min.css" rel="stylesheet">
+  <link href="css/dataTable.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
   <!-- Global site tag (gtag.js) - Google Analytics-->
   <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
   <script>
@@ -50,11 +44,12 @@
                   <div class="card-body pb-0">
                     <div class="btn-group float-right">
                     </div>
-                    <div class="text-center">Last block</div>
-                    <div class="text-center"><%= bNumber %></div>
+                    <div class="text-center h4">Last block</div>
+                    <br>
+                    <div class="text-center text-value h1"><%= bNumber %></div>
                   </div>
-                  <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
-                    <canvas class="chart" id="card-chart1" height="70"></canvas>
+                  <div class="chart-wrapper mt-3 mx-3" style="height:60px;">
+                    <canvas class="chart" id="card-chart1" height="60"></canvas>
                   </div>
                 </div>
               </div>
@@ -62,11 +57,12 @@
               <div class="col-sm-6 col-lg-3">
                 <div class="card text-white bg-info">
                   <div class="card-body pb-0">
-                    <div class="text-center">Last miner</div>
-                    <div class="text-center"><%= miner %></div>
+                    <div class="text-center h4">Last miner</div>
+                    <br><br>
+                    <div class="text-center text-value h4"><%= miner %></div>
                   </div>
-                  <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
-                    <canvas class="chart" id="card-chart2" height="70"></canvas>
+                  <div class="chart-wrapper mt-3 mx-3" style="height:50px;">
+                    <canvas class="chart" id="card-chart2" height="50"></canvas>
                   </div>
                 </div>
               </div>
@@ -76,11 +72,12 @@
                   <div class="card-body pb-0">
                     <div class="btn-group float-right">
                     </div>
-                    <div class="text-center">Difficulty</div>
-                    <div class="text-center"><%= difficulty %></div>
+                    <div class="text-center h4">Difficulty</div>
+                    <br><br>
+                    <div class="text-center text-value h2"><%= difficulty %></div>
                   </div>
-                  <div class="chart-wrapper mt-3" style="height:70px;">
-                    <canvas class="chart" id="card-chart3" height="70"></canvas>
+                  <div class="chart-wrapper mt-3" style="height:48px;">
+                    <canvas class="chart" id="card-chart3" height="48"></canvas>
                   </div>
                 </div>
               </div>
@@ -90,133 +87,28 @@
                   <div class="card-body pb-0">
                     <div class="btn-group float-right">
                     </div>
-                    <div class="text-center">Last block #txs</div>
-                    <div class="text-center"><%= txNumber %></div>
+                    <div class="text-center h4">Last block #txs</div>
+                    <br>
+                    <div class="text-center text-value h1"><%= txNumber %></div>
                   </div>
-                  <div class="chart-wrapper mt-3" style="height:70px;">
-                    <canvas class="chart" id="card-chart4" height="70"></canvas>
+                  <div class="chart-wrapper mt-3" style="height:59px;">
+                    <canvas class="chart" id="card-chart4" height="59"></canvas>
                   </div>
                 </div>
               </div>
-              <!-- /.col-->
             </div>
-            <!-- /.row-->
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">Block number</th>
-                  <th scope="col">Tx hash</th>
-                  <th scope="col">Sender</th>
-                  <th scope="col">Receiver</th>
-                  <th scope="col">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                          <td>
-                            <div class="avoid"><%= bNumber %></div>
-                          </td>
-                          <td>
-                            <div class="avoid"><%= hash1 %></div>
-                          </td>
-                          <td>
-                            <div class="avoid"><%= sender1 %></div>
-                          </td>
-                          <td>
-                            <div class="avoid"><%= receiver1 %></div>
-                          </td>
-                         <td>
-                            <div class="avoid"><%= amount1 %></div>
-                          </td>
-                        </tr>
 
-                        <tr>
-                          <td>
-                            <div class="avoid"><%= bNumber %></div>
-                          </td>
-                          <td>
-                            <div class="avoid"><%= hash2 %></div>
-                          </td>
-                          <td>
-                            <div class="avoid"><%= sender2 %></div>
-                          </td>
-                          <td>
-                            <div class="avoid"><%= receiver2 %></div>
-                          </td>
-                          <td>
-                            <div class="avoid"><%= amount2 %></div>
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <td>
-                            <div class="avoid"><%= bNumber %></div>
-                          </td>
-                          <td>
-                            <div class="avoid"><%= hash3 %></div>
-                          </td>
-                          <td>
-                            <div class="avoid"><%= sender3 %></div>
-                          </td>
-                          <td>
-                            <div class="avoid"><%= receiver3 %></div>
-                          </td>
-                          <td>
-                            <div class="avoid"><%= amount3 %></div>
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <td>
-                            <div class="avoid"><%= bNumber %></div>
-                          </td>
-                          <td>
-                            <div class="avoid"><%= hash4 %></div>
-                          </td>
-                          <td>
-                            <div class="avoid"><%= sender4 %></div>
-                          </td>
-                          <td>
-                            <div class="avoid"><%= receiver4 %></div>
-                          </td>
-                          <td>
-                            <div class="avoid"><%= amount4 %></div>
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <td>
-                            <div class="avoid"><%= bNumber %></div>
-                          </td>
-                          <td>
-                            <div class="avoid"><%= hash5 %></div>
-                          </td>
-                          <td>
-                            <div class="avoid"><%= sender5 %></div>
-                          </td>
-                          <td>
-                            <div class="avoid"><%= receiver5 %></div>
-                          </td>
-                          <td>
-                            <div class="avoid"><%= amount5 %></div>
-                          </td>
-                        </tr>
-              </tbody>
-            </table>
-            <!-- /.row-->
-            <!--div class="row">
+            <div class="row">
               <div class="col-md-12">
-                <div class="card">
-                  <div class="card-header">Last block transactions detail</div>
+                <div class="card text-black-50">
+                  <div class="card-header text-center h3"><strong>Last transactions</strong></div>
                   <div class="card-body">
                     <br>
-                    <table class="table table-responsive-sm table-hover table-outline mb-0">
+                    
+                    <table  id="paginatedTable" class="table table-responsive-sm">
                       <thead class="thead-light">
                         <tr>
-                          <th class="text-center">
-                            <i class="icon-people"></i>
-                          </th>
-                          <th class="text-center ">Block number</th>
+                          <th class="text-center">Block number</th>
                           <th class="text-center">Transaction hash</th>
                           <th class="text-center">Sender</th>
                           <th class="text-center">Receiver</th>
@@ -224,105 +116,24 @@
                         </tr>
                       </thead>
                       <tbody>
-
+                        <% for (var i = 0; i < lastBlock.length; i++) { %>
                         <tr>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= bNumber %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= hash1 %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= sender1 %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= receiver1 %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= amount1 %></div>
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= bNumber %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= hash2 %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= sender2 %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= receiver2 %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= amount2 %></div>
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= bNumber %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= hash3 %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= sender3 %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= receiver3 %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= amount3 %></div>
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= bNumber %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= hash4 %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= sender4 %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= receiver4 %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= amount4 %></div>
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= bNumber %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= hash5 %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= sender5 %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= receiver5 %></div>
-                          </td>
-                          <td class="text-center text-black-50">
-                            <div class="avoid"><%= amount5 %></div>
-                          </td>
-                        </tr>
-
+                          <td class="text-center text-black-50" style="word-break: break-all"><div class="avoid"><%= bNumber %></div></td>
+                          <td class="text-center text-black-50" style="word-break: break-all"><div class="avoid"><%= lastBlock[i].hash %></div></td>
+                          <td class="text-center text-black-50" style="word-break: break-all"><div class="avoid"><%= lastBlock[i].sender %></div></td>
+                          <td class="text-center text-black-50" style="word-break: break-all"><div class="avoid"><%= lastBlock[i].receiver %></div></td>
+                          <td class="text-center text-black-50" style="word-break: break-all"><div class="avoid"><%= lastBlock[i].amount %></div></td>
+                        </tr>    
+                        <% } %>
                       </tbody>
                     </table>
-                  </br>
+
                   </div>
                 </div>
               </div>
+            </div>
 
-            </div-->
+
 
           </div>
         </div>
@@ -339,8 +150,14 @@
         <a href="https://coreui.io">CoreUI</a>
       </div>
     </footer>
-    <!-- CoreUI and necessary plugins-->
+
+    <script>
+      $(document).ready(function() {
+        $('#paginatedTable').DataTable();
+      });
+    </script>
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="node_modules/pace-progress/pace.min.js"></script>

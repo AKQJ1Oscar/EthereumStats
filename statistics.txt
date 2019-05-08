@@ -1,0 +1,34 @@
+This file cointains the necessary queries to retrieve /statistics information from the database.
+
+
+// Most common txs sender
+db.Transaction.aggregate([
+	{$group: {_id:"$sender", total: {$sum:1}}},
+	{$sort : {"total": -1}},
+	{$limit : 3},
+	{$project: {"total" : 1}}
+], {allowDiskUse:true})
+
+// Most common txs receiver
+db.Transaction.aggregate([
+	{$group: {_id:"$receiver", total: {$sum:1}}},
+	{$sort : {"total": -1}},
+	{$limit : 3},
+	{$project: {"total" : 1}}
+], {allowDiskUse:true})
+
+// Most common ether sender
+db.Transaction.aggregate([
+	{$group: {_id:"$sender", total: {$sum:"$amount"}}},
+	{$sort : {"total": -1}},
+	{$limit : 3},
+	{$project: {"total" : 1}}
+], {allowDiskUse:true})
+
+// Most common ether receiver
+db.Transaction.aggregate([
+	{$group: {_id:"$receiver", total: {$sum:"$amount"}}},
+	{$sort : {"total": -1}},
+	{$limit : 3},
+	{$project: {"total" : 1}}
+], {allowDiskUse:true})
