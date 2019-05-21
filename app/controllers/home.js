@@ -160,13 +160,13 @@ function RCallNormal(res, accounts) {
     return;
   }
   console.log("rendering...");
-  res.render('response', {
+  res.render('walletsResponse', {
     title: TITLE,
-    uuid: "'"+uuid.toString()+"'"
-  }, removeJSON(uuid))
+	uuid: uuid[1]
+  }, removeJSON(uuid[0]))
 }
 
-// Called when req.query.type is etweenness
+// Called when req.query.type is betweenness
 function RCallBetween(res, accounts) {
   console.log("Function RCallBetween called.");
   var out = R("/home/ether/EthereumTracking/TFM/R/betweenness.R")
@@ -179,10 +179,10 @@ function RCallBetween(res, accounts) {
     return;
   }
   console.log("rendering...");
-  res.render('response', {
+  res.render('walletsResponse', {
     title: TITLE,
-    uuid: "'"+uuid.toString()+"'"
-  }, removeJSON(uuid))
+    uuid: uuid[1]
+  }, removeJSON(uuid[0]))
 }
 
 // Called when req.query.type is closeness
@@ -198,10 +198,10 @@ function RCallCloseness(res, accounts) {
     return;
   }
   console.log("rendering...");
-  res.render('response', {
+  res.render('walletsResponse', {
     title: TITLE,
-    uuid: "'"+uuid.toString()+"'"
-  }, removeJSON(uuid))
+    uuid: uuid[1]
+  }, removeJSON(uuid[0]))
 }
 
 // Called when req.query.type is pageRank
@@ -217,10 +217,10 @@ function RCallPageRank(res, accounts) {
     return;
   }
   console.log("rendering...");
-  res.render('response', {
+  res.render('walletsResponse', {
     title: TITLE,
-    uuid: "'"+uuid.toString()+"'"
-  }, removeJSON(uuid))
+    uuid: uuid[1]
+  }, removeJSON(uuid[0]))
 }
 
 
@@ -377,7 +377,7 @@ async function renderIndex(res) {
         title: TITLE,
         bNumber: block,
         miner: result.miner,
-        difficulty: (result.difficulty / 1000000000000).toFixed(3).toString() + " THash" ,
+        difficulty: (result.difficulty / 1000000000000).toFixed(3).toString(),
         txNumber: result.transactions.length,
         lastBlock : lastBlock
       });
@@ -546,7 +546,8 @@ function generateJSON(res, accounts, type) {
 
   try {
     fs.writeFileSync('/home/ether/EthereumTracking/TFM/EthereumStats/public/wallets/' + uuid, JSON.stringify(jsonOutput), 'utf8');
-    return uuid;
+    //return uuid;
+    return [uuid, jsonOutput];
   } catch (error) {
     console.log("Error while writing result.json");
     //TODO render error page
@@ -570,7 +571,7 @@ function getStatistics(res) {
   model.getStatisticsData(res, printStats);
 }
 
-function printStats(res, result) {
+/*function printStats(res, result) {
       senders = result[0];
       receivers = result[1];
       txSenders = senders.tx;
@@ -582,6 +583,63 @@ function printStats(res, result) {
       console.log("etherSenders: " + etherSenders);
       console.log("etherReceivers: " + etherReceivers);
       res.render('statistics', {title: TITLE, txSenders: txSenders, txReceivers: txReceivers, etherSenders: etherSenders, etherReceivers: etherReceivers});
+}*/
+
+function printStats(res, result) {
+  var bNumber;
+  var miner;
+  var difficulty = 3;
+  var txNumber;
+  web3.eth.getBlockNumber().then(function(block) {
+    web3.eth.getBlock(block, true, function(error, result) {
+      if (error) {
+        //TODO render error page
+        throw err;
+      }
+      var lastBlock = new Array();
+      for (var i = 0; i<result.transactions.length; i++){
+        var data = {};
+        data.hash = result.transactions[i].hash;
+        data.sender = result.transactions[i].from;
+        data.receiver = result.transactions[i].to;
+        if (result.transactions[i].value != null) {
+          data.amount = (result.transactions[i].value / 1000000000000000000).toFixed(3).toString();  
+        } else {
+          data.amount = result.transactions[i].value;
+        }
+        lastBlock.push(data);
+      }
+      bNumber = block;
+      miner = result.miner;
+      difficulty = (result.difficulty / 1000000000000).toFixed(3).toString();
+      txNumber = result.transactions.length;
+      console.log(bNumber);
+      console.log(miner);
+      console.log(difficulty);
+      console.log(txNumber);
+	statistics();
+	/* res.render('index', {
+        bNumber: block,
+        miner: result.miner,
+        difficulty: (result.difficulty / 1000000000000).toFixed(3).toString(),
+        txNumber: result.transactions.length,
+        lastBlock : lastBlock
+      });*/
+    });
+  });
+  senders = result[0];
+  receivers = result[1];
+  txSenders = senders.tx;
+  txReceivers = receivers.tx;
+  etherSenders = senders["ether"];
+  etherReceivers = receivers["ether"];
+  console.log("txSenders: " + txSenders);
+  console.log("txReceivers: " + txReceivers);
+  console.log("etherSenders: " + etherSenders);
+  console.log("etherReceivers: " + etherReceivers);
+  function statistics() {
+  	res.render('statistics', {title: TITLE, txSenders: txSenders, txReceivers: txReceivers, etherSenders: etherSenders, etherReceivers: etherReceivers, bNumber: bNumber, miner: miner, difficulty: difficulty, txNumber: txNumber});
+  }
 }
 
 // Save accounts to CSV and call the R script.

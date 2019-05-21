@@ -1,197 +1,24 @@
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-  <base href="./">
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-  <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
-  <meta name="author" content="Łukasz Holeczek">
-  <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
-  <title><%= title %></title>
-  <!-- Main styles for this application-->
-  <link href="css/styleCoreUI.css" rel="stylesheet">
-  <link href="vendors/pace-progress/css/pace.min.css" rel="stylesheet">
-  <link href="css/dataTable.css" rel="stylesheet">
-  <link href="css/style.css" rel="stylesheet">
-  <!-- Global site tag (gtag.js) - Google Analytics-->
-  <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
-      // Shared ID
-      gtag('config', 'UA-118965717-3');
-      // Bootstrap ID
-      gtag('config', 'UA-118965717-5');
-    </script>
-  </head>
-  <% include header %>
-  <body class="app header-fixed">    
-    <% include nav %>
-    <div class="app-body">
-      <main class="main">
-        <div class="container-fluid">
-          <div class="animated fadeIn">
-
-            <div class="row">
-              <div class="col-md-12">
-                <div class="card text-black-50">
-                  <div class="card-header text-center h3"><strong>Most common transaction senders</strong></div>
-                  <div class="card-body">
-                    <br>
-                    
-                    <table  id="paginatedTable" class="table table-responsive-sm">
-                      <thead class="thead-light">
-                        <tr>
-                          <th class="text-center">Sender</th>
-                          <th class="text-center">Transactions number</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <% for (var i = 0; i < txSenders.length; i++) { %>
-                        <tr>
-                          <td class="text-center text-black-50" style="word-break: break-all"><div class="avoid"><%= txSenders[i].wallet %></div></td>
-                          <td class="text-center text-black-50" style="word-break: break-all"><div class="avoid"><%= txSenders[i].total %></div></td>
-                        </tr>    
-                        <% } %>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-12">
-                <div class="card text-black-50">
-                  <div class="card-header text-center h3"><strong>Most common transaction receivers</strong></div>
-                  <div class="card-body">
-                    <br>
-                    
-                    <table id="paginatedTable2" class="table table-responsive-sm">
-                      <thead class="thead-light">
-                        <tr>
-                          <th class="text-center">Receiver</th>
-                          <th class="text-center">Transactions number</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <% for (var i = 0; i < txReceivers.length; i++) { %>
-                        <tr>
-                          <td class="text-center text-black-50" style="word-break: break-all"><div class="avoid"><%= txReceivers[i].wallet %></div></td>
-                          <td class="text-center text-black-50" style="word-break: break-all"><div class="avoid"><%= txReceivers[i].total %></div></td>
-                        </tr>    
-                        <% } %>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-12">
-                <div class="card text-black-50">
-                  <div class="card-header text-center h3"><strong>Most common ether senders</strong></div>
-                  <div class="card-body">
-                    <br>
-                    
-                    <table  id="paginatedTable3" class="table table-responsive-sm">
-                      <thead class="thead-light">
-                        <tr>
-                          <th class="text-center">Sender</th>
-                          <th class="text-center">Ether</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <% for (var i = 0; i < etherSenders.length; i++) { %>
-                        <tr>
-                          <td class="text-center text-black-50" style="word-break: break-all"><div class="avoid"><%= etherSenders[i].wallet %></div></td>
-                          <td class="text-center text-black-50" style="word-break: break-all"><div class="avoid"><%= etherSenders[i].total %></div></td>
-                        </tr>    
-                        <% } %>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-12">
-                <div class="card text-black-50">
-                  <div class="card-header text-center h3"><strong>Most common ether receivers</strong></div>
-                  <div class="card-body">
-                    <br>
-                    
-                    <table  id="paginatedTable4" class="table table-responsive-sm">
-                      <thead class="thead-light">
-                        <tr>
-                          <th class="text-center">Receiver</th>
-                          <th class="text-center">Ether</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <% for (var i = 0; i < etherReceivers.length; i++) { %>
-                        <tr>
-                          <td class="text-center text-black-50" style="word-break: break-all"><div class="avoid"><%= etherReceivers[i].wallet %></div></td>
-                          <td class="text-center text-black-50" style="word-break: break-all"><div class="avoid"><%= etherReceivers[i].total %></div></td>
-                        </tr>    
-                        <% } %>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-
-          </div>
-        </div>
-      </main>
-      
-    </div>
-    <footer class="app-footer">
-      <div>
-        <a href="https://coreui.io">CoreUI</a>
-        <span>&copy; 2018 creativeLabs.</span>
-      </div>
-      <div class="ml-auto">
-        <span>Powered by</span>
-        <a href="https://coreui.io">CoreUI</a>
-      </div>
-    </footer>
-
-    <script>
-      $(document).ready(function() {
-        $('#paginatedTable').DataTable();
-      });
-      $(document).ready(function() {
-        $('#paginatedTable2').DataTable();
-      });
-      $(document).ready(function() {
-        $('#paginatedTable3').DataTable();
-      });
-      $(document).ready(function() {
-        $('#paginatedTable4').DataTable();
-      });
-    </script>
-    <script src="node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-    <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
-    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="node_modules/pace-progress/pace.min.js"></script>
-    <script src="node_modules/perfect-scrollbar/dist/perfect-scrollbar.min.js"></script>
-    <script src="node_modules/@coreui/coreui/dist/js/coreui.min.js"></script>
-    <!-- Plugins and scripts required by this view-->
-    <script src="node_modules/chart.js/dist/Chart.min.js"></script>
-    <script src="node_modules/@coreui/coreui-plugin-chartjs-custom-tooltips/dist/js/custom-tooltips.min.js"></script>
-    <script src="js/main.js"></script>
-  </body>
-  </html>
+    <% for (var i = 0; i < etherReceivers.length; i++) { %>
+  <%= txSenders[i].wallet %>
+  <%= txSenders[i].total %>
+  <% } %>
+   <% for (var i = 0; i < etherReceivers.length; i++) { %>
+  <%= txReceivers[i].wallet %>
+  <%= txReceivers[i].total %>
+  <% } %>
+   <% for (var i = 0; i < etherReceivers.length; i++) { %>
+  <%= etherSenders[i].wallet %>
+  <%= etherSenders[i].total %>
+  <% } %>
+   <% for (var i = 0; i < etherReceivers.length; i++) { %>
+  <%= etherReceivers[i].wallet %>
+  <%= etherReceivers[i].total %>
+  <% } %>
+---
+<%= bNumber %>
+---
+<%= miner %>
+---
+<%= difficulty %>
+---
+<%= txNumber %>
