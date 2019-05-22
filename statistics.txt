@@ -1,7 +1,6 @@
-This file cointains the necessary queries to retrieve /statistics information from the database.
+This file contains the necessary queries to retrieve /statistics information from the database.
 
-
-// Most common txs sender
+// Most common tx sender
 db.Transaction.aggregate([
 	{$group: {_id:"$sender", total: {$sum:1}}},
 	{$sort : {"total": -1}},
@@ -9,7 +8,7 @@ db.Transaction.aggregate([
 	{$project: {"total" : 1}}
 ], {allowDiskUse:true})
 
-// Most common txs receiver
+// Most common tx receiver
 db.Transaction.aggregate([
 	{$group: {_id:"$receiver", total: {$sum:1}}},
 	{$sort : {"total": -1}},

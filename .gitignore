@@ -1,4 +1,3 @@
-mongoDB/*
 node_modules/
-mongodb/*
-/*.log
+mongodb/
+*.log
