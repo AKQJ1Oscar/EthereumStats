@@ -13,7 +13,6 @@
   "dependencies": {
     "array-to-csv": "^1.0.1",
     "body-parser": "^1.13.3",
-    "cassandra-driver": "^3.5.0",
     "chart.js": "2.7.3",
     "compression": "^1.5.2",
     "convert-array-to-csv": "^1.0.0",
