@@ -12,4 +12,3 @@ We use a local Geth client to access the public chain, accessing it through IPC.
 
 * web3
 * MongoDB
-* (Optional) Cassandra
