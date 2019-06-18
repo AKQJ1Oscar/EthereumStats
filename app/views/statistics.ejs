@@ -1,19 +1,19 @@
-    <% for (var i = 0; i < etherReceivers.length; i++) { %>
-  <%= txSenders[i].wallet %>
-  <%= txSenders[i].total %>
-  <% } %>
-   <% for (var i = 0; i < etherReceivers.length; i++) { %>
-  <%= txReceivers[i].wallet %>
-  <%= txReceivers[i].total %>
-  <% } %>
-   <% for (var i = 0; i < etherReceivers.length; i++) { %>
-  <%= etherSenders[i].wallet %>
-  <%= etherSenders[i].total %>
-  <% } %>
-   <% for (var i = 0; i < etherReceivers.length; i++) { %>
-  <%= etherReceivers[i].wallet %>
-  <%= etherReceivers[i].total %>
-  <% } %>
+<% for (var i = 0; i < etherReceivers.length; i++) { %>
+	<%= txSenders[i].wallet %>
+	<%= txSenders[i].total %>
+<% } %>
+<% for (var i = 0; i < etherReceivers.length; i++) { %>
+	<%= txReceivers[i].wallet %>
+	<%= txReceivers[i].total %>
+<% } %>
+<% for (var i = 0; i < etherReceivers.length; i++) { %>
+	<%= etherSenders[i].wallet %>
+	<%= etherSenders[i].total %>
+<% } %>
+<% for (var i = 0; i < etherReceivers.length; i++) { %>
+	<%= etherReceivers[i].wallet %>
+	<%= etherReceivers[i].total %>
+<% } %>
 ---
 <%= bNumber %>
 ---
